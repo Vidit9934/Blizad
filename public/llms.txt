@@ -1,0 +1,28 @@
+# Blizad
+
+> Blizad is a growth company based in Raipur, Chhattisgarh, India. One team runs performance marketing, SEO, GEO and AEO, full-stack web development and managed hosting for businesses across India. Tagline: Built for momentum.
+
+## People
+- Sourav Yadav (also known as Krantiveer), Founder & CEO: seven years in digital marketing; has managed Google, Meta and LinkedIn advertising for 50+ brands.
+- Vidit Vaibhav, Co-founder & CTO: full-stack engineer with experience on products for Google and Thomson Reuters (as clients); certified Claude practitioner; built TuneFry, My Life Choices and SCDM Accelerator.
+
+## Services
+- [Performance marketing](https://blizad.in/services/performance-marketing)
+- [Meta Ads and lead generation](https://blizad.in/services/meta-ads-lead-generation)
+- [Google Ads management](https://blizad.in/services/google-ads)
+- [LinkedIn advertising](https://blizad.in/services/linkedin-ads)
+- [Social media marketing](https://blizad.in/services/social-media-marketing)
+- [Influencer marketing](https://blizad.in/services/influencer-marketing)
+- [Google Business Profile optimisation](https://blizad.in/services/google-business-profile)
+- [SEO, GEO and AEO](https://blizad.in/services/seo-geo-aeo)
+- [Full-stack web development](https://blizad.in/services/web-development)
+- [Website management and optimisation](https://blizad.in/services/website-management)
+- [Managed hosting and care](https://blizad.in/services/hosting)
+
+## Work
+- [TuneFry](https://www.tunefry.com/home): music distribution platform for independent artists.
+- [My Life Choices](https://www.my-lifechoices.com/): personalised wellness marketplace with bookings and a books store.
+- [SCDM Accelerator](https://scdm-accelerator.org/): hackathon platform for industry and academia in clinical data.
+
+## Contact
+- [Start a project](https://blizad.in/contact)

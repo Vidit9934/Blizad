@@ -1,0 +1,311 @@
+.nav {
+  position: fixed;
+  top: var(--s2);
+  left: var(--gutter);
+  right: var(--gutter);
+  z-index: 60;
+  max-width: var(--max);
+  margin-inline: auto;
+  border-radius: var(--r-pill);
+  /* Solid and opaque at every scroll position — content never shows through. */
+  background: var(--midnight-raised);
+  border: 1px solid var(--midnight-line);
+  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+}
+
+.nav__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  height: var(--nav-h);
+}
+
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-height: 44px;
+}
+
+.nav__mark {
+  width: 30px;
+  height: 30px;
+  color: var(--electric);
+}
+
+.nav__word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.045em;
+}
+
+.nav__primary {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: var(--s4);
+}
+
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: 0.975rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition:
+    color var(--t-hover) var(--ease-hover),
+    background-color var(--t-hover) var(--ease-hover);
+}
+
+.nav__link:hover,
+.nav__link[aria-current='page'],
+.nav__link[data-active],
+.nav__link[aria-expanded='true'] {
+  color: var(--white);
+  background: var(--midnight-line);
+}
+
+.nav__chevron {
+  transition: rotate 0.3s var(--ease-out);
+}
+
+.nav__trigger[aria-expanded='true'] .nav__chevron {
+  rotate: 180deg;
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.nav__burger {
+  display: none;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--midnight-line);
+  border-radius: 50%;
+  background: var(--midnight-line);
+}
+
+/* Mega-menu: the one glass surface — it genuinely layers over scrolling content
+   (single deliberate use, solid fallback below; listed in DESIGN.md). */
+.mega {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  border-bottom: 1px solid var(--midnight-line);
+  background: rgba(10, 10, 12, 0.94);
+  /* avoid-ai-design-ignore: K3 */
+  backdrop-filter: blur(18px) saturate(140%);
+  animation: mega-in 0.35s var(--ease-out);
+}
+
+/* avoid-ai-design-ignore: K3 */
+@supports not (backdrop-filter: blur(1px)) {
+  .mega {
+    background: var(--midnight);
+  }
+}
+
+@keyframes mega-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.mega__inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr minmax(180px, auto);
+  gap: var(--s5);
+  padding-block: var(--s5) var(--s6);
+}
+
+.mega__title {
+  margin-bottom: var(--s2);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.mega__group ul {
+  display: grid;
+  gap: 2px;
+}
+
+.mega__link {
+  display: block;
+  padding: 6px 0;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--t-hover) var(--ease-hover);
+}
+
+.mega__link:hover {
+  color: var(--white);
+}
+
+.mega__last {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+}
+
+/* Unfoldmart-inspired: a small "why us" stat strip beside the service links,
+   inside the one glass surface the project already budgets for the mega-menu. */
+.mega__aside {
+  display: grid;
+  gap: var(--s2);
+  margin-top: var(--s4);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--midnight-line);
+}
+
+.mega__aside-title {
+  font-size: var(--step-micro);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mega__stat {
+  display: block;
+}
+
+.mega__stat-value {
+  margin-right: 6px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+}
+
+.mega__stat-label {
+  color: var(--muted);
+}
+
+/* Mobile sheet sits under the bar */
+.sheet {
+  position: fixed;
+  inset: var(--nav-offset) 0 0 0;
+  overflow-y: auto;
+  background: var(--midnight);
+  border-top: 1px solid var(--midnight-line);
+}
+
+.sheet__inner {
+  display: grid;
+  gap: var(--s4);
+  padding-block: var(--s3) var(--s6);
+}
+
+.sheet__group summary,
+.sheet__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  border-bottom: 1px solid var(--midnight-line);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  list-style: none;
+  cursor: pointer;
+}
+
+.sheet__group summary::-webkit-details-marker {
+  display: none;
+}
+
+.sheet__group[open] summary svg {
+  rotate: 45deg;
+}
+
+.sheet__group ul {
+  display: grid;
+  padding-block: 8px 16px;
+}
+
+.sheet__group a {
+  display: block;
+  padding: 10px 0;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.sheet__whatsapp {
+  justify-content: center;
+}
+
+html.sheet-open {
+  overflow: hidden;
+}
+
+@media (max-width: 1080px) {
+  .nav__primary {
+    display: none;
+  }
+  .nav__burger {
+    display: grid;
+  }
+  /* WhatsApp stays reachable as an icon; its label stays for screen readers. */
+  .nav__whatsapp {
+    width: 48px;
+    padding: 0;
+  }
+  .nav__whatsapp span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 460px) {
+  .nav__bar {
+    gap: 6px;
+  }
+  .nav__actions {
+    gap: 2px;
+  }
+  .nav__word {
+    font-size: 1.3rem;
+  }
+  .nav__mark {
+    width: 26px;
+    height: 26px;
+  }
+  .nav__cta {
+    padding-inline: 12px;
+    font-size: 0.875rem;
+  }
+  /* Brand + WhatsApp + CTA + hamburger together were crowding a ~360px bar enough
+     to squeeze the hamburger against the pill's edge. WhatsApp must stay visible
+     here (qa-scroll.mjs gates "WhatsApp visible at scroll 0" — it's a primary,
+     low-friction conversion channel, not optional chrome), so every element in
+     the row is tightened instead of removing one. */
+  .nav__whatsapp {
+    width: 40px;
+  }
+  .nav__burger {
+    width: 40px;
+    height: 40px;
+  }
+}

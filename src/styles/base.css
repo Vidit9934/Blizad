@@ -1,0 +1,423 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--midnight-deep);
+  color-scheme: dark;
+  scroll-padding-top: calc(var(--nav-offset) + 16px);
+  interpolate-size: allow-keywords;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: var(--step-body);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--ground);
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Zero specificity so component classes can set their own list padding. */
+:where(ul[role='list'], ol[role='list']) {
+  list-style: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--electric);
+  color: var(--white);
+}
+
+/* ---------- Layout ---------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.shell--wide {
+  max-width: 1520px;
+}
+
+.shell--narrow {
+  max-width: 860px;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  padding-top: var(--nav-offset);
+}
+
+.scene {
+  position: relative;
+  padding-block: var(--section);
+}
+
+.scene--ice {
+  --ink: var(--midnight);
+  --muted: var(--muted-dark);
+  --focus: #0a6fe0;
+  background: linear-gradient(180deg, #f6fafd 0%, var(--ice) 60%, #eaf2f9 100%);
+  color: var(--ink);
+  color-scheme: light;
+}
+
+.scene--deep {
+  background: linear-gradient(180deg, transparent, rgba(5, 5, 6, 0.85) 18%, rgba(5, 5, 6, 0.85) 82%, transparent);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 12px 18px;
+  border-radius: var(--r-sm);
+  background: var(--white);
+  color: var(--midnight);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s var(--ease-out);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- Type ---------- */
+
+.t-hero {
+  font-size: var(--step-hero);
+  font-weight: var(--weight-display-heavy);
+  letter-spacing: -0.03em;
+  line-height: 1.07;
+}
+
+.t-display {
+  font-size: var(--step-display);
+  font-weight: var(--weight-display-heavy);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+/* Quiet "statement" register — Dream/Pedigree statements, Voices, FAQ, founder quote. Light-weight display sans, large, no tracking. See DESIGN.md. */
+.t-statement {
+  font-family: var(--font-display);
+  font-size: var(--step-editorial);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.t-title {
+  font-size: var(--step-title);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.t-lead {
+  font-size: var(--step-lead);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 38ch;
+}
+
+.t-small {
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+.t-note {
+  font-size: var(--step-micro);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.t-kicker {
+  font-size: var(--step-small);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-bg: transparent;
+  --btn-ink: var(--ink);
+  --btn-line: color-mix(in srgb, var(--ink) 28%, transparent);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border: 1px solid var(--btn-line);
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--t-hover) var(--ease-hover),
+    border-color var(--t-hover) var(--ease-hover),
+    color var(--t-hover) var(--ease-hover),
+    box-shadow var(--t-hover) var(--ease-hover);
+}
+
+.btn:hover {
+  --btn-line: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  --btn-bg: var(--electric-fill);
+  --btn-ink: var(--white);
+  --btn-line: var(--electric-fill);
+}
+
+.btn--primary:hover {
+  --btn-bg: var(--electric-press);
+  --btn-line: var(--electric);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--electric) 22%, transparent);
+}
+
+.btn--quiet {
+  --btn-line: transparent;
+  padding-inline: 14px;
+}
+
+.btn--quiet:hover {
+  --btn-line: color-mix(in srgb, var(--ink) 24%, transparent);
+}
+
+.btn--large {
+  min-height: 56px;
+  padding: 16px 30px;
+  font-size: 1.0625rem;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  transition: text-decoration-color var(--t-hover) var(--ease-hover);
+}
+.text-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Reveal states (only when JS motion is active) ---------- */
+
+.split-line {
+  display: block;
+}
+
+/* SplitText line masks (GSAP adds "<linesClass>-mask"). Tight display leading
+   would clip descenders (g, y, p), so the clip box extends below the baseline
+   and the negative margin keeps the layout unchanged. */
+.split-line-mask {
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  padding-inline: 0.06em;
+  margin-inline: -0.06em;
+}
+
+/* ---------- Forms ---------- */
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field label,
+.field legend {
+  font-size: var(--step-small);
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--midnight-line);
+  background: color-mix(in srgb, var(--midnight-raised) 80%, transparent);
+  color: var(--white);
+  transition:
+    border-color var(--t-hover) var(--ease-hover),
+    box-shadow var(--t-hover) var(--ease-hover);
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #7f91a8;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: #2c4767;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--electric);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--electric) 35%, transparent);
+}
+
+.field [aria-invalid='true'] {
+  border-color: #ff7a7a;
+}
+
+.field-error {
+  font-size: var(--step-micro);
+  color: #ffb3b3;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

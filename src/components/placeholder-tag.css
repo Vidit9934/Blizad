@@ -1,0 +1,20 @@
+.placeholder-tag {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-inline-start: 8px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  border: 1px dashed color-mix(in srgb, currentColor 55%, transparent);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: #ffd27a;
+  white-space: nowrap;
+}
+
+.scene--ice .placeholder-tag {
+  color: #8a5300;
+}

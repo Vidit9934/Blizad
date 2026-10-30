@@ -1,0 +1,32 @@
+/* The persistent 3D signature layer (and its static fallback) — a fixed background
+   layer behind real DOM content, never a replacement for it. See DESIGN.md's
+   "3D signature layer" section. */
+
+.signature-canvas {
+  position: fixed !important;
+  inset: 0;
+  /* z-index:0, matching Atmosphere.tsx's own proven pattern — a fixed element
+     with a negative z-index paints behind the opaque <body> background in this
+     project's stacking context, which silently hides it entirely. */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.signature-static {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 180px;
+  height: 180px;
+  margin: auto;
+  color: var(--cyan);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .signature-static {
+    width: 120px;
+    height: 120px;
+  }
+}

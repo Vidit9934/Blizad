@@ -1,0 +1,74 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(60% 60% at 50% 45%, #0b2240 0%, var(--midnight) 55%, var(--midnight-deep) 100%);
+  pointer-events: none;
+  animation: preloader-lift 0.8s var(--ease-out) 1.25s forwards;
+}
+
+.preloader__mark {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.preloader svg {
+  width: 72px;
+  height: 72px;
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.preloader path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: preloader-draw 0.9s var(--ease-out) 0.1s forwards;
+}
+
+.preloader path + path {
+  animation-delay: 0.35s;
+}
+
+.preloader__word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+  clip-path: inset(0 100% 0 0);
+  animation: preloader-word 0.7s var(--ease-out) 0.55s forwards;
+}
+
+@keyframes preloader-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes preloader-word {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes preloader-lift {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+[data-seen] .preloader {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader {
+    display: none;
+  }
+}

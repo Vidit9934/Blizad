@@ -1,0 +1,100 @@
+/* Ungrammary-inspired page-identity device — always opaque, lives in the side
+   gutter, never crosses over content. Hidden below the width Nav itself already
+   uses to collapse (1080px) so it can never crowd the mobile sheet trigger. */
+
+.edge-label {
+  display: none;
+  position: fixed;
+  left: 10px;
+  top: 50%;
+  z-index: 40;
+  padding: 10px 6px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transform-origin: left center;
+  transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+  transition: color var(--t-hover) var(--ease-hover);
+}
+
+.edge-label:hover,
+.edge-label:focus-visible,
+.edge-label[aria-expanded='true'] {
+  color: var(--cyan);
+}
+
+.edge-label__text {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+@media (min-width: 1081px) {
+  .edge-label {
+    display: block;
+  }
+}
+
+/* Solid panel — never glass; the project's one reserved glass slot stays reserved. */
+.chapter-index {
+  position: fixed;
+  left: 0;
+  top: var(--nav-offset);
+  bottom: 0;
+  z-index: 55;
+  width: min(320px, 86vw);
+  overflow-y: auto;
+  background: var(--midnight);
+  border-right: 1px solid var(--midnight-line);
+  box-shadow: 30px 0 60px -30px rgba(0, 0, 0, 0.6);
+}
+
+.chapter-index__inner {
+  padding: var(--s4) var(--s3);
+}
+
+.chapter-index__title {
+  margin-top: var(--s4);
+  color: var(--muted);
+  font-size: var(--step-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chapter-index__title:first-child {
+  margin-top: 0;
+}
+
+.chapter-index__list {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--s2);
+}
+
+.chapter-index__list button,
+.chapter-index__list a {
+  display: block;
+  width: 100%;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--white);
+  text-align: left;
+  text-decoration: none;
+  font-size: var(--step-body);
+  cursor: pointer;
+  transition: background-color var(--t-hover) var(--ease-hover);
+}
+
+.chapter-index__list button:hover,
+.chapter-index__list a:hover,
+.chapter-index__list button:focus-visible,
+.chapter-index__list a:focus-visible {
+  background: var(--midnight-raised);
+}

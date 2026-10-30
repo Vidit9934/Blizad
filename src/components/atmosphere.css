@@ -1,0 +1,87 @@
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.atmosphere > * {
+  position: absolute;
+  inset: 0;
+}
+
+/* 1. Tonal ground */
+.atmosphere__ground {
+  background: linear-gradient(180deg, #081628 0%, var(--midnight) 45%, var(--midnight-deep) 100%);
+}
+
+/* 2. Drifting light (transform-only loops, different phases) */
+.atmosphere__light {
+  inset: auto;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  /* No filter: the radial gradient is already soft, and blur on a moving 70vmax layer doubled frame time. */
+  will-change: transform;
+}
+
+.atmosphere__light--a {
+  left: -18vmax;
+  top: -26vmax;
+  background: radial-gradient(closest-side, rgba(8, 124, 250, 0.2), transparent 70%);
+  animation: drift-a 34s ease-in-out infinite alternate;
+}
+
+.atmosphere__light--b {
+  right: -24vmax;
+  bottom: -30vmax;
+  background: radial-gradient(closest-side, rgba(0, 191, 239, 0.12), transparent 70%);
+  animation: drift-b 47s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(22vw, 18vh, 0) scale(1.15);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate3d(-26vw, -22vh, 0) scale(0.9);
+  }
+}
+
+/* Contour grid from the brand board — the wires the signal travels on */
+.atmosphere__grid {
+  background-image:
+    linear-gradient(to right, rgba(0, 191, 239, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 191, 239, 0.05) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(120% 90% at 60% 30%, #000 30%, transparent 85%);
+}
+
+.atmosphere__canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* 5. Film grain — one static tile, never animated. Normal blending on purpose:
+   mix-blend-mode: overlay over the live canvas re-blended every frame and cut
+   scrolling from 60 to 20 fps (measured). */
+.atmosphere__grain {
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 6. Vignette */
+.atmosphere__vignette {
+  background: radial-gradient(120% 100% at 50% 40%, transparent 50%, rgba(2, 6, 12, 0.55) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere__light {
+    animation: none;
+  }
+}

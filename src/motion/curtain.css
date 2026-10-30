@@ -1,0 +1,19 @@
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-deep) 100%);
+  /* Expands from wherever the visitor clicked (--curtain-x/-y), set in Curtain.tsx. */
+  clip-path: circle(var(--curtain-r, 0px) at var(--curtain-x, 50%) var(--curtain-y, 50%));
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.curtain__mark {
+  width: 64px;
+  height: 64px;
+  color: var(--electric);
+}
