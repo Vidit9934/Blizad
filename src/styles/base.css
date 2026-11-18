@@ -142,6 +142,14 @@ main {
   --ink: var(--midnight);
   --muted: var(--muted-dark);
   --focus: #0a6fe0;
+  /* Paper-wipe (usePaperScene.ts): these default to 0, so a scene with the
+     hook not mounted (or motion disabled) renders at its settled, full-bleed
+     state for free — the clip only ever shrinks the scene's own box inward,
+     revealing the dark room behind it (body/Atmosphere) at the margin, never
+     a separate background to maintain here. */
+  --ps-inset: 0px;
+  --ps-radius: 0px;
+  clip-path: inset(var(--ps-inset) round var(--ps-radius));
   background: linear-gradient(180deg, #f6fafd 0%, var(--ice) 60%, #eaf2f9 100%);
   color: var(--ink);
   color-scheme: light;
@@ -237,6 +245,41 @@ main {
   font-size: var(--step-small);
   font-weight: 500;
   color: var(--muted);
+}
+
+/* ---------- Glass / panel (v6) ----------
+   Bare text that lost its card chrome to the v6 word-scarcity pass needs a
+   backing surface so it never sits unreadable over the persistent 3D bolt.
+   `.panel` is the default: a solid gradient + a 1px top-edge highlight, no
+   `backdrop-filter`, so it costs nothing against the glass-budget/perf rule
+   (DESIGN.md's own documented "looks frosted, costs nothing" pattern).
+   `.glass` is the real, budgeted `backdrop-filter` surface — see DESIGN.md's
+   "Glass budget" for the full, named list. Never combine `.glass` with a
+   continuous/looping animation on the same element or an ancestor. */
+.panel {
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: var(--r-md);
+  background: linear-gradient(165deg, var(--midnight-raised), var(--midnight-deep));
+  border-top: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+}
+
+.scene--ice .panel {
+  background: linear-gradient(165deg, #ffffff, var(--ice));
+  border-top: 1px solid color-mix(in srgb, var(--midnight) 8%, transparent);
+}
+
+.glass {
+  background: rgba(10, 10, 12, 0.94);
+  /* avoid-ai-design-ignore: K3 — named, budgeted surface, see DESIGN.md Glass budget */
+  backdrop-filter: blur(8px) saturate(140%);
+  border-top: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
+}
+
+/* avoid-ai-design-ignore: K3 */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background: var(--midnight-raised);
+  }
 }
 
 /* ---------- Buttons ---------- */

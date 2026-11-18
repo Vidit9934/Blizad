@@ -61,7 +61,7 @@ export function SearchEverywhere() {
   return (
     <section ref={scope} className="scene search" aria-labelledby="search-title" data-beat="2">
       <div className="shell shell--wide">
-        <div className="search__head">
+        <div className="search__head panel">
           <h2 id="search-title" className="t-display">
             Be the answer wherever the question is asked.
           </h2>

@@ -1,6 +1,7 @@
 import { Seo, faqLd } from '../components/Seo'
 import { homeFaqs } from '../content/faq'
 import { Hero } from '../scenes/home/Hero'
+import { Ticker } from '../scenes/home/Ticker'
 import { Dream } from '../scenes/home/Dream'
 import { Proof } from '../scenes/home/Proof'
 import { Doors } from '../scenes/home/Doors'
@@ -16,7 +17,12 @@ import { Hub } from '../scenes/home/Hub'
 import { Close, HomeFaq } from '../scenes/home/Close'
 import '../scenes/home/home.css'
 
-/** Scene order follows emotion: arrive, dream, believe, choose, see, proof, path, mechanism, decide, trust, doubt, act. */
+/**
+ * v9 scene order — reordered from a stock funnel (hero, statement, numbers...)
+ * into: arrive (0) → breathe (1) → what we do (2) → proof gallery, alone (3) →
+ * trust cluster (4) → how we work (5) → decide (6) → final trust + act (7).
+ * See DESIGN.md's v9 chapter table for the full rationale.
+ */
 export function Component() {
   return (
     <>
@@ -27,18 +33,19 @@ export function Component() {
         jsonLd={[faqLd(homeFaqs)]}
       />
       <Hero />
+      <Ticker />
       <Dream />
-      <Proof />
       <Doors />
       <SearchEverywhere />
       <Builds />
       <Pedigree />
-      <Voices />
+      <Proof />
       <Path />
       <Pipeline />
       <Estimator />
-      <Founders />
       <Hub />
+      <Voices />
+      <Founders />
       <HomeFaq />
       <Close />
     </>

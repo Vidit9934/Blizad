@@ -1,0 +1,18 @@
+.magnitude-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.magnitude-bar__col {
+  flex: 1 1 0;
+  min-width: 4px;
+  border-radius: 2px 2px 0 0;
+  background: color-mix(in srgb, var(--electric-fill) 25%, transparent);
+}
+
+.magnitude-bar__col[data-filled='true'] {
+  background: var(--electric-fill);
+}

@@ -9,11 +9,77 @@
 }
 
 .hero__inner {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   align-items: center;
   gap: var(--s5);
   padding-block: var(--s6);
+}
+
+/* Rises into a curved fan as the pinned scrub plays (Hero.tsx) — real builds,
+   not decoration. Positioned over the stage's own area so the cards read as
+   replacing the bolt's frame, not floating over the copy column. perspective
+   here (not transform-style) is enough: each card's own rotateY/translateZ is
+   an independent 3D transform, not nested 3D geometry. */
+.hero__fan {
+  position: absolute;
+  inset: 0;
+  left: 38%;
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+  pointer-events: none;
+}
+
+.hero__fan-card {
+  grid-area: 1 / 1;
+  width: clamp(120px, 14vw, 180px);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--midnight-raised);
+  border: 1px solid var(--midnight-line);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.hero__fan-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+
+.hero__fan-name {
+  display: block;
+  padding: 10px 12px;
+  font-size: var(--step-micro);
+  font-weight: 600;
+  color: var(--white);
+}
+
+.hero__fan-card--next {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(165deg, var(--midnight-raised), var(--midnight-deep));
+}
+
+.hero__fan-card--next .hero__fan-name {
+  padding: 0 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 899px) {
+  /* The fan needs the wide two-column stage this page already drops below
+     900px (see the existing .hero__stage { display: none } rule) — matching
+     that same breakpoint rather than inventing a second mobile treatment. */
+  .hero__fan {
+    display: none;
+  }
 }
 
 .hero__copy {
@@ -97,14 +163,6 @@
   width: min(100%, 560px);
   justify-self: end;
   will-change: transform;
-}
-
-.hero__cone {
-  position: absolute;
-  inset: -30% -10% 0;
-  background: conic-gradient(from 180deg at 50% 0%, transparent 155deg, rgba(0, 191, 239, 0.16) 180deg, transparent 205deg);
-  mask-image: linear-gradient(180deg, #000 20%, transparent 95%);
-  pointer-events: none;
 }
 
 .hero__ring {
@@ -299,7 +357,63 @@
 
 .dream__text {
   max-width: 17ch;
-  font-size: clamp(2.4rem, 6.2vw, 6rem);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* Baseline tracking for the reactive words (useSceneReveals.ts's pointer-weight
+   branch) so the first pointer move eases from this value, not from the
+   browser's unset "normal" default. */
+.dream__text .word {
+  letter-spacing: -0.01em;
+}
+
+/* ================= Ticker (full-bleed rhythm break) ================= */
+
+.ticker {
+  padding-block: var(--s5);
+  overflow: hidden;
+}
+
+.ticker__track {
+  display: flex;
+  width: max-content;
+  gap: var(--s6);
+  white-space: nowrap;
+}
+
+.ticker__track--motion {
+  animation: ticker-scroll calc(30s / var(--ticker-speed, 1)) linear infinite;
+}
+
+@keyframes ticker-scroll {
+  to {
+    transform: translateX(-25%);
+  }
+}
+
+.ticker__word {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s5);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--muted);
+}
+
+.ticker__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cyan);
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track {
+    animation: none;
+  }
 }
 
 /* ================= Proof (ice room) ================= */
@@ -324,25 +438,36 @@
   font-weight: 600;
 }
 
-/* Promoted from a buried footnote: the "legit" signal gets its own visible bar. */
+/* v6: collapsed by default (native <details>) — the attribution sentence is still
+   in the server HTML, reachable by click, no longer sitting on-page as permanent prose. */
 .proof__method {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
   padding: var(--s3) 0;
   margin-bottom: var(--s5);
   border-top: 1px solid color-mix(in srgb, var(--midnight) 18%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--midnight) 18%, transparent);
 }
 
+.proof__method summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.proof__method summary::-webkit-details-marker {
+  display: none;
+}
+
 .proof__method svg {
   flex: none;
-  margin-top: 2px;
   color: var(--electric-fill);
 }
 
 .proof__method p {
   max-width: 64ch;
+  margin-top: var(--s2);
   color: var(--muted-dark);
 }
 
@@ -452,14 +577,14 @@
 }
 
 .proof__figure--w3 .proof__value {
-  font-size: clamp(3.5rem, 11vw, 8rem);
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
   color: var(--electric-fill);
 }
 .proof__figure--w2 .proof__value {
-  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
 }
 .proof__figure--w1 .proof__value {
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
 }
 
 @media (min-width: 900px) {
@@ -475,10 +600,10 @@
   }
 }
 
-/* ================= Doors ================= */
+/* ================= Doors — v9: the current, branching ================= */
 
 .doors__title {
-  margin-bottom: var(--s5);
+  margin-bottom: var(--s6);
   max-width: 40ch;
   font-family: var(--font-body);
   font-size: var(--step-lead);
@@ -487,138 +612,112 @@
   line-height: 1.45;
 }
 
-.doors__list {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: var(--s3);
-}
-
-/* Bento: span traces to the real service count per group (tierOf in Doors.tsx) — 1 wide tile + 1 medium + 2 narrow, not an even default. */
-.door--lg {
-  grid-column: span 4;
-}
-.door--md {
-  grid-column: span 2;
-}
-.door--sm {
-  grid-column: span 3;
-}
-
-.door {
+/* The branching CurrentPath sits behind the four real stops, not around them
+   in separate boxes — one continuous diagram the stops sit on top of. */
+.doors__diagram {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s2);
-  padding: var(--s4);
-  border-radius: var(--r-md);
-  border: 1px solid var(--midnight-line);
-  background: linear-gradient(165deg, var(--midnight-raised), var(--midnight-deep));
-  overflow: clip;
-  transition:
-    opacity 0.4s var(--ease-out),
-    border-color 0.4s var(--ease-out);
 }
 
-/* The hero tile's icon sits large and faint behind the word — a ghost watermark, not a uniform chip (K6/L2). */
-.door__watermark {
+.doors__path {
   position: absolute;
-  top: var(--s3);
-  right: var(--s3);
-  width: 72px;
-  height: 72px;
-  color: var(--electric-fill);
-  opacity: 0.14;
+  inset: -40px 0 auto 0;
+  width: 100%;
+  height: auto;
   pointer-events: none;
 }
 
-.door__icon {
-  flex: none;
+.doors__stops {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s4);
+  padding-top: clamp(140px, 16vw, 220px);
+}
+
+.door-stop {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  text-align: center;
+}
+
+.door-stop__icon {
+  justify-self: center;
   color: var(--cyan);
-  margin-right: 10px;
+  margin-bottom: 4px;
 }
 
-.door--lg .door__word {
-  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-}
-
-.door--md .door__word,
-.door--sm .door__word {
-  display: flex;
-  align-items: center;
-  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
-}
-
-.door__word {
+.door-stop__word {
   font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 1;
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  letter-spacing: -0.03em;
 }
 
-.door__word a {
-  display: inline-block;
+.door-stop__word a {
   text-decoration: none;
-  transition:
-    color 0.4s var(--ease-out),
-    translate 0.5s var(--ease-out);
+  transition: color 0.4s var(--ease-out);
 }
 
-.door__line {
+.door-stop:hover .door-stop__word a,
+.door-stop:focus-within .door-stop__word a {
+  color: var(--electric);
+}
+
+.door-stop__line {
   color: var(--muted);
   font-size: var(--step-small);
 }
 
-.door__line a {
-  color: var(--white);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.door__reveal {
+.door-stop__reveal {
   display: grid;
-  gap: 10px;
+  gap: 4px;
   color: var(--muted);
+  transition:
+    opacity 0.3s var(--ease-hover),
+    grid-template-rows 0.3s var(--ease-hover);
 }
 
-.door--lg .door__reveal ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 18px;
+@media (hover: hover) {
+  .door-stop__reveal {
+    opacity: 0;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+  }
+  .door-stop__reveal > * {
+    min-height: 0;
+  }
+  .door-stop:hover .door-stop__reveal,
+  .door-stop:focus-within .door-stop__reveal {
+    opacity: 1;
+    grid-template-rows: 1fr;
+  }
 }
 
-.door--md .door__reveal ul {
-  display: grid;
-  gap: 2px;
-}
-
-.door__reveal a {
+.door-stop__reveal a {
   color: var(--white);
   font-weight: 500;
   text-underline-offset: 0.25em;
 }
 
-@media (hover: hover) {
-  .doors__list:hover .door:not(:hover, :focus-within) {
-    opacity: 0.5;
-  }
-  .door:hover,
-  .door:focus-within {
-    border-color: color-mix(in srgb, var(--electric) 45%, var(--midnight-line));
-  }
-  .door:hover .door__word a,
-  .door:focus-within .door__word a {
-    color: var(--electric);
-    translate: 6px 0;
-  }
-}
-
 @media (max-width: 760px) {
-  .doors__list {
+  .doors__stops {
     grid-template-columns: 1fr;
+    gap: var(--s5);
+    padding-top: var(--s5);
   }
-  .door--lg,
-  .door--md,
-  .door--sm {
-    grid-column: span 1;
+  .doors__path {
+    display: none;
+  }
+  .door-stop {
+    text-align: left;
+  }
+  .door-stop__icon {
+    justify-self: start;
+  }
+  .door-stop__reveal {
+    opacity: 1;
+    grid-template-rows: 1fr;
   }
 }
 
@@ -921,6 +1020,29 @@
   display: grid;
   gap: 12px;
   align-content: start;
+  /* v9: each real project is its own colour-field band, not a bare card on the
+     midnight page background — a palette tint, never a new hue. */
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--build-tint);
+}
+
+/* Radial, not flat — a glow from the top (the page's own light-source
+   convention) fading to deep midnight at the edges, so each band reads as
+   real atmosphere, not a tinted chip. Mixed strong enough (45%) to actually
+   read as its own colour against the already blue-tinted page background. */
+.build--tint-1 {
+  --build-tint: radial-gradient(130% 110% at 50% 0%, color-mix(in srgb, var(--electric-fill) 45%, var(--midnight) 55%), var(--midnight-deep) 85%);
+}
+.build--tint-2 {
+  --build-tint: radial-gradient(130% 110% at 50% 0%, color-mix(in srgb, var(--cyan) 45%, var(--midnight) 55%), var(--midnight-deep) 85%);
+}
+.build--tint-3 {
+  --build-tint: radial-gradient(
+    130% 110% at 50% 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--electric-fill) 50%, var(--cyan) 50%) 50%, var(--midnight) 50%),
+    var(--midnight-deep) 85%
+  );
 }
 
 /* Pinned: the whole scene (head + panel + caption) must fit one viewport,
@@ -1071,14 +1193,31 @@
 }
 
 .build__meta {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s2);
   margin-top: 8px;
+  isolation: isolate;
+}
+
+/* The current motif's third scale (after the 3D hero strand and Doors'
+   branching diagram), large and faint behind the project name. */
+.build__motif {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: -5%;
+  width: 150%;
+  height: auto;
+  transform: translateY(-50%);
+  opacity: 0.16;
+  pointer-events: none;
 }
 
 .build__name {
+  position: relative;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 600;
   letter-spacing: -0.04em;
@@ -1379,6 +1518,14 @@
   font-weight: 600;
 }
 
+.hub__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+  flex: 1 1 42ch;
+}
+
 .hub__title {
   flex: 1 1 42ch;
   max-width: 48ch;
@@ -1399,7 +1546,7 @@
   background: color-mix(in srgb, var(--midnight-raised) 55%, transparent);
   /* device-frame chrome, not decoration; glass surface #2 of 3, see DESIGN.md */
   /* avoid-ai-design-ignore: K3 */
-  backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
   overflow: clip;
 }
 
@@ -1450,7 +1597,7 @@
   }
 }
 
-/* ================= Path (ice room) ================= */
+/* ================= Path (ice room) — v9: the current, linear ================= */
 
 .path__title {
   max-width: 14ch;
@@ -1459,22 +1606,71 @@
 
 .path__steps {
   position: relative;
+  container-type: inline-size;
+  --path-speed: 1;
 }
 
-.path__line {
+/* The linear CurrentPath (same component Doors uses) replaces the old flat
+   gradient-bar line — one shared device, not two different line treatments
+   for the same "steps along a path" idea. */
+.path__current {
   position: absolute;
   left: 0;
   right: 0;
-  top: 23px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--electric-fill), var(--cyan));
-  transform-origin: left;
+  top: 14px;
+  width: 100%;
+  height: 48px;
+  pointer-events: none;
+}
+
+.path__current .current-path__line,
+.path__current .current-path__node {
+  stroke: var(--electric-fill);
+}
+
+.path__current .current-path__node {
+  fill: var(--ice);
+}
+
+.path__flow {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .path__flow {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 2px;
+    width: 64px;
+    height: 20px;
+    border-radius: var(--r-pill);
+    background: radial-gradient(closest-side, var(--cyan), transparent 70%);
+    opacity: 0.8;
+    pointer-events: none;
+    /* --path-speed is written by useScrollVelocity (Path.tsx) — the same shared
+       physics signal driving Pipeline's connector flow and Voices' marquee.
+       transform only (cqw units via .path__steps' container-type), never left —
+       left triggers layout every frame, transform doesn't. */
+    animation: path-flow calc(2.8s / var(--path-speed, 1)) linear infinite;
+  }
+}
+
+@keyframes path-flow {
+  from {
+    transform: translateX(-10cqw);
+  }
+  to {
+    transform: translateX(110cqw);
+  }
 }
 
 .path__steps ol {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--s3);
+  padding-top: 64px;
 }
 
 .path__step {
@@ -1526,16 +1722,14 @@
     grid-template-columns: 1fr;
     gap: var(--s4);
     padding-left: 72px;
+    padding-top: 0;
   }
-  .path__line {
-    left: 23px;
-    right: auto;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    height: auto;
-    transform-origin: top;
-    background: linear-gradient(180deg, var(--electric-fill), var(--cyan));
+  /* The horizontal current diagram doesn't read well rotated into a vertical
+     line at this width — hidden here the same way Doors' branching path is,
+     the numbered circles alone carry the sequence on narrow screens. */
+  .path__current,
+  .path__flow {
+    display: none;
   }
   .path__num {
     position: absolute;
@@ -1744,6 +1938,21 @@
   font-size: 0.8125rem;
   color: #9fe6ff;
   white-space: pre-wrap;
+  transition: opacity 0.25s var(--ease-hover);
+}
+
+/* v6: the status readout is a real-CI-dashboard detail, not permanent copy —
+   gate name/icon (the shape) stay always visible; the state reveals on
+   inspection. Always visible on touch. */
+@media (hover: hover) {
+  .gate__state {
+    opacity: 0;
+  }
+  .gate:hover .gate__state,
+  .gate:focus .gate__state,
+  .gate:focus-within .gate__state {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1988,13 +2197,40 @@
 
 .founder__portrait .placeholder-tag {
   position: absolute;
+  z-index: 2;
   top: 16px;
   left: 8px;
 }
 
+/* v9 — the one new entrance primitive: a curtain split revealing the portrait
+   once on first scroll-in. Transform-only (scaleX), never clip-path, so this
+   costs nothing beyond its own one-shot 0.9s tween. Default is scaleX(0) — no
+   cover — so the real portrait stays visible without JS/motion; the mount
+   effect is the only thing that ever covers it before drawing it back open. */
+.founder__curtain {
+  position: absolute;
+  inset-block: 0;
+  z-index: 1;
+  width: 50%;
+  pointer-events: none;
+  transform: scaleX(0);
+}
+
+.founder__curtain--a {
+  left: 0;
+  transform-origin: left;
+  background: var(--electric-fill);
+}
+
+.founder__curtain--b {
+  right: 0;
+  transform-origin: right;
+  background: var(--midnight-deep);
+}
+
 .founder__monogram {
   font-family: var(--font-display);
-  font-size: clamp(5rem, 12vw, 10rem);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   font-weight: 300;
   letter-spacing: -0.06em;
   color: rgba(0, 191, 239, 0.08);
@@ -2018,6 +2254,11 @@
   gap: 8px;
   color: var(--cyan);
   font-weight: 600;
+}
+
+.founder__panel {
+  padding: clamp(18px, 2.4vw, 28px);
+  border-radius: var(--r-md);
 }
 
 .founder__bio {
@@ -2080,8 +2321,16 @@
 
 /* ================= Close ================= */
 
+/* The one scene that gets to be loud (reinterpreting KMF's solid-gold close
+   band for this palette): a full-bleed solid Electric Blue fill with dark
+   type, so the funnel has a real final beat instead of reading as one more
+   dark scene indistinguishable from the FAQ above it. --electric-fill (not
+   the lighter --electric) because DESIGN.md already measured it at 4.81:1
+   for white text — reused here for the button, not a new unverified color. */
 .close {
   padding-block: clamp(120px, 18vw, 220px);
+  background: var(--electric-fill);
+  color: var(--midnight);
 }
 
 .close__grid {
@@ -2093,6 +2342,7 @@
 
 .close__title {
   max-width: 13ch;
+  color: var(--midnight);
 }
 
 .close__actions {
@@ -2107,7 +2357,9 @@
   width: clamp(180px, 22vw, 260px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--electric-fill);
+  /* Dark button, white type — inverted from every other scene's gold-on-dark
+     button, because this scene itself is now the solid fill. */
+  background: var(--midnight);
   color: var(--white);
   font-family: var(--font-display);
   font-size: clamp(1.25rem, 1.8vw, 1.6rem);
@@ -2117,16 +2369,21 @@
   text-decoration: none;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 30px 90px -20px rgba(8, 124, 250, 0.55);
+    0 30px 90px -20px rgba(10, 10, 12, 0.55);
   transition: background-color var(--t-hover) var(--ease-hover);
 }
 
 .close__button:hover {
-  background: var(--electric-press);
+  background: var(--midnight-raised);
 }
 
-.close__whatsapp {
-  color: var(--muted);
+/* Compound selector, not .close__whatsapp alone — Vite's bundled CSS order
+   doesn't follow source import order (CLAUDE.md), so a single-class override
+   of .text-link's cascade position can silently lose depending on build
+   output, not source order. */
+.close .close__whatsapp {
+  color: var(--midnight);
+  opacity: 0.72;
 }
 
 @media (max-width: 760px) {

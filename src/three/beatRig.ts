@@ -9,6 +9,7 @@ const current: Pose = { ...poses[0] }
 const proxy = { t: 0 }
 const fractureState = { value: 0 }
 const chargeState = { value: 0 }
+const ignitionState = { value: 0 }
 let quickSeek: ((value: number) => void) | null = null
 let trigger: ScrollTrigger | null = null
 
@@ -42,6 +43,23 @@ function applyBeat(t: number) {
   current.look = next.look
   current.fill = next.fill
   current.glow = next.glow
+  current.fov = next.fov
+  current.flow = next.flow
+  current.coil = next.coil
+  // Beat 0's own pinned scrub (Hero.tsx) dollies in on top of the rest pose —
+  // an additive push, not a second pose, so it only ever touches beat 0's camera.
+  if (clamped < 1 && ignitionState.value > 0) {
+    const k = ignitionState.value * (1 - clamped)
+    current.cam = [current.cam[0], current.cam[1], current.cam[2] - k * 1.6]
+    current.fov = current.fov - k * 4
+  }
+  // Pipeline's fracture also pulls the camera back while near beat 5, so toggling
+  // "3 agencies" reads as the camera retreating to show the pieces have separated —
+  // fades to zero away from beat 5 so a left-on toggle doesn't skew other chapters.
+  const pipelineProximity = Math.max(0, 1 - Math.abs(clamped - 5))
+  if (pipelineProximity > 0 && fractureState.value > 0) {
+    current.cam = [current.cam[0] + fractureState.value * pipelineProximity * 0.6, current.cam[1], current.cam[2]]
+  }
   listeners.forEach((l) => l(current, clamped, fractureState.value, chargeState.value))
 }
 
@@ -91,4 +109,15 @@ export function setFracture(target: 0 | 1) {
 /** Estimator's answered-question count (0..1) drives the charge-meter pose directly, not scroll. */
 export function setCharge(target: number) {
   gsap.to(chargeState, { value: target, duration: 0.5, ease: 'power2.out', onUpdate: () => applyBeat(proxy.t) })
+}
+
+/**
+ * Hero's own pinned scrub (0..1 progress) rides this same shared state to dolly
+ * beat 0's camera in as the CSS stage recedes — a third discrete override next to
+ * `setFracture`/`setCharge`, scoped to beat 0 only (see `applyBeat`). Called directly
+ * from Hero's existing ScrollTrigger `onUpdate`, not a new trigger of its own.
+ */
+export function setIgnition(progress: number) {
+  ignitionState.value = gsap.utils.clamp(0, 1, progress)
+  applyBeat(proxy.t)
 }

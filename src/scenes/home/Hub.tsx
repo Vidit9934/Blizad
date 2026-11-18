@@ -56,13 +56,15 @@ export function Hub() {
   return (
     <section className="scene hub" aria-labelledby="hub-title" data-beat="6">
       <div className="shell shell--wide hub__inner">
-        <span className="hub__kicker">
-          <Icon name="build" size={16} className="icon-bounce" />
-          In development
-        </span>
-        <h2 id="hub-title" className="t-title hub__title">
-          Blizad Hub: a CRM built for how we already work with you.
-        </h2>
+        <div className="hub__head panel">
+          <span className="hub__kicker">
+            <Icon name="build" size={16} className="icon-bounce" />
+            In development
+          </span>
+          <h2 id="hub-title" className="t-title hub__title">
+            Blizad Hub: a CRM built for how we work.
+          </h2>
+        </div>
         <div ref={card} className="hub__card">
           <span className="hub__spotlight" aria-hidden="true" />
           <div className="hub__device">

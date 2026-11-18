@@ -1,7 +1,10 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { CurrentPath } from '../../components/CurrentPath'
 import { MQ } from '../../motion/MotionProvider'
+import { useScrollVelocity } from '../../motion/useScrollVelocity'
+import { usePaperScene } from '../../motion/usePaperScene'
 import { useSceneReveals } from '../../motion/useSceneReveals'
 
 const steps = [
@@ -12,25 +15,24 @@ const steps = [
   { name: 'Optimise', line: 'Weekly changes made from data.' },
 ]
 
-/** Scene 8 — Path. A real sequence, so it is numbered; the line draws as you scroll. */
+/**
+ * Scene 8 — Path. v9: the same CurrentPath device Doors uses, laid out
+ * linear instead of branching — one idea, two scales. The current's flow
+ * speed (a CSS custom property driving the dash animation) follows scroll
+ * velocity, the same shared signal Voices/Pipeline already read.
+ */
 export function Path() {
   const scope = useRef<HTMLElement>(null)
   useSceneReveals(scope)
+  usePaperScene(scope)
+
+  useScrollVelocity((velocity) => {
+    scope.current?.style.setProperty('--path-speed', (1 + velocity * 1.4).toFixed(2))
+  })
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia()
-      // The line runs across on wide screens and down the left edge on narrow ones.
-      mm.add({ wide: '(min-width: 901px)', motion: MQ.full }, (context) => {
-        const { wide, motion } = context.conditions as { wide: boolean; motion: boolean }
-        if (!motion) return
-        const axis = wide ? 'scaleX' : 'scaleY'
-        gsap.fromTo(
-          '.path__line',
-          { [axis]: 0 },
-          { [axis]: 1, ease: 'none', scrollTrigger: { trigger: '.path__steps', start: 'top 80%', end: 'bottom 45%', scrub: 0.8 } },
-        )
-      })
       mm.add(MQ.full, () => {
         gsap.utils.toArray<HTMLElement>('.path__step').forEach((step, index) => {
           gsap.from(step, {
@@ -51,7 +53,8 @@ export function Path() {
           Growth isn’t accidental. It’s engineered.
         </h2>
         <div className="path__steps">
-          <span className="path__line" aria-hidden="true" />
+          <CurrentPath nodes={steps.map((s) => ({ id: s.name }))} mode="linear" className="path__current" />
+          <span className="path__flow" aria-hidden="true" />
           <ol role="list">
             {steps.map((step, index) => (
               <li key={step.name} className="path__step" tabIndex={0}>

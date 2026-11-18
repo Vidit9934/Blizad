@@ -5,6 +5,7 @@ import { testimonials, type Testimonial } from '../../content/testimonials'
 import { recognitions } from '../../content/recognitions'
 import { proofFigures } from '../../content/proof'
 import { useMotion } from '../../motion/MotionProvider'
+import { usePaperScene } from '../../motion/usePaperScene'
 import { useScrollVelocity } from '../../motion/useScrollVelocity'
 import { useSceneReveals } from '../../motion/useSceneReveals'
 
@@ -42,6 +43,7 @@ const DIRECTIONS = ['up', 'down', 'up'] as const
 export function Voices() {
   const scope = useRef<HTMLElement>(null)
   useSceneReveals(scope)
+  usePaperScene(scope)
   const { enabled } = useMotion()
   const columns = useMemo(() => splitColumns(buildCards(), 3), [])
   // Same shared scroll-velocity signal as Pipeline's connector flow — one physics
@@ -52,7 +54,7 @@ export function Voices() {
   })
 
   return (
-    <section ref={scope} className="scene scene--ice voices" aria-labelledby="voices-title" data-beat="4">
+    <section ref={scope} className="scene scene--ice voices" aria-labelledby="voices-title" data-beat="6">
       <div className="shell shell--wide voices__head">
         <h2 id="voices-title" className="t-statement">
           Words from the people we’ve built for.

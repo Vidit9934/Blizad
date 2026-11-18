@@ -53,18 +53,64 @@
   }
 }
 
-/* Contour grid from the brand board — the wires the signal travels on */
-.atmosphere__grid {
-  background-image:
-    linear-gradient(to right, rgba(0, 191, 239, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 191, 239, 0.05) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(120% 90% at 60% 30%, #000 30%, transparent 85%);
-}
-
 .atmosphere__canvas {
   width: 100%;
   height: 100%;
+}
+
+/* Persistent light cone, positioned via --cone-x/--cone-y (written by
+   Scene3DCanvas.tsx's useFrame, projecting the object's screen position each
+   beat) so it always sits behind the signature object in every chapter, not
+   just the hero. A background-position tween only — no filter, no blend mode. */
+.atmosphere__cone {
+  --cone-x: 72%;
+  --cone-y: 42%;
+  background: radial-gradient(
+    38vmax 52vmax at var(--cone-x) var(--cone-y),
+    rgba(0, 191, 239, 0.14),
+    transparent 62%
+  );
+}
+
+/* Echo rings: concentric, faint, expanding and fading with scroll velocity
+   (EchoRings in Atmosphere.tsx, driven by the already-shared useScrollVelocity
+   signal). Transform/opacity only — box-shadow rings, no filter: blur(). */
+.atmosphere__echo {
+  --echo-scale: 1;
+  --echo-opacity: 0.12;
+}
+
+.atmosphere__echo-ring {
+  position: absolute;
+  left: var(--cone-x, 72%);
+  top: var(--cone-y, 42%);
+  border-radius: 50%;
+  border-style: solid;
+  background: transparent;
+  transform: translate(-50%, -50%) scale(var(--echo-scale));
+  opacity: var(--echo-opacity);
+  will-change: transform, opacity;
+}
+
+.atmosphere__echo-ring--a {
+  width: 22vmax;
+  height: 22vmax;
+  border-width: 1px;
+  border-color: rgba(0, 191, 239, 0.55);
+}
+
+.atmosphere__echo-ring--b {
+  width: 38vmax;
+  height: 38vmax;
+  border-width: 1px;
+  border-color: rgba(8, 124, 250, 0.4);
+}
+
+.atmosphere__echo-ring--c {
+  width: 56vmax;
+  height: 56vmax;
+  border-width: 1px;
+  border-color: rgba(0, 191, 239, 0.25);
 }
 
 /* 5. Film grain — one static tile, never animated. Normal blending on purpose:
@@ -83,5 +129,11 @@
 @media (prefers-reduced-motion: reduce) {
   .atmosphere__light {
     animation: none;
+  }
+  /* EchoRings isn't mounted under reduced motion (Atmosphere.tsx gates it on
+     `enabled`); the cone has nothing to chase (no 3D layer running either), so
+     it just holds its CSS default position — no JS, no tween. */
+  .atmosphere__echo-ring {
+    display: none;
   }
 }

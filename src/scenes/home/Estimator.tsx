@@ -78,7 +78,7 @@ export function Estimator() {
     <section ref={scope} className="scene estimator" aria-labelledby="estimator-title" data-product-screen data-beat="6">
       <div className="shell shell--wide estimator__grid">
         <div className="estimator__ask">
-          <h2 id="estimator-title" className="t-display">
+          <h2 id="estimator-title" className="t-display panel">
             What do you need first?
           </h2>
           <ChoiceGroup legend="Your main goal" name="goal" options={goalOptions} value={goal} onChange={setGoal} />
@@ -121,7 +121,7 @@ export function Estimator() {
             </>
           ) : (
             <p className="t-small estimator__empty">
-              Answer three questions and we’ll suggest where to start. {answered}/3 answered.
+              Three questions. One starting stack. {answered}/3 answered.
             </p>
           )}
         </aside>

@@ -55,7 +55,7 @@ export function Pipeline() {
   return (
     <section ref={scope} className="scene pipeline" aria-labelledby="pipeline-title" data-product-screen data-beat="5">
       <div className="shell shell--wide pipeline__grid">
-        <div className="pipeline__head">
+        <div className="pipeline__head panel">
           <h2 id="pipeline-title" className="t-display" data-reveal="lines">
             AI speed. Production discipline.
           </h2>
@@ -72,7 +72,7 @@ export function Pipeline() {
               aria-checked={view === 'agencies'}
               onClick={() => {
                 setView('agencies')
-                setFracture(1) // fractures the 3D bolt's own spine into 3 segments, not just the flat diagram
+                setFracture(1) // splits the 3D Current into 3 separate strands, not just the flat diagram
               }}
             >
               3 agencies
@@ -98,7 +98,7 @@ export function Pipeline() {
               <span ref={flow} className="pipeline__connector-flow" />
             </div>
             {gates.map((gate) => (
-              <li key={gate.name} className={`gate gate--group${gate.group}`}>
+              <li key={gate.name} className={`gate gate--group${gate.group}`} tabIndex={0}>
                 <span className="gate__agency">Agency {gate.group}</span>
                 <span className="gate__dot" aria-hidden="true" />
                 <Icon name={gate.icon} className="gate__icon" size={22} />

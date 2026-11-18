@@ -67,22 +67,34 @@ export function useSceneReveals(scope: RefObject<HTMLElement | null>) {
           )
 
           // Opt-in only (`data-reveal-pointer="weight"`, used by Dream alone — the
-          // "spend boldness in one place" rule): words gain weight as the cursor
-          // nears them, scoped to this element's own rect, never `document`.
+          // "spend boldness in one place" rule still holds, one scene only): words
+          // swell toward the cursor across weight, size and tracking together —
+          // not weight alone — scoped to this element's own rect, never `document`.
           if (el.dataset.revealPointer === 'weight') {
             const words = split.words as HTMLElement[]
             const mmPointer = gsap.matchMedia()
             mmPointer.add(MQ.pointer, () => {
-              const setters = words.map((word) => gsap.quickTo(word, 'fontWeight', { duration: 0.5, ease: 'power3.out' }))
+              gsap.set(words, { transformOrigin: '50% 50%' })
+              const weightSetters = words.map((word) => gsap.quickTo(word, 'fontWeight', { duration: 0.5, ease: 'power3.out' }))
+              const scaleSetters = words.map((word) => gsap.quickTo(word, 'scale', { duration: 0.5, ease: 'power3.out' }))
+              const trackingSetters = words.map((word) => gsap.quickTo(word, 'letterSpacing', { duration: 0.5, ease: 'power3.out' }))
+              // Plain numbers, not unit strings: quickTo infers and keeps the
+              // unit ("em") from the value already set in CSS (.dream__text
+              // .word's baseline letter-spacing), so a bare number here stays
+              // in em rather than defaulting to px.
+              const apply = (index: number, t: number) => {
+                weightSetters[index](450 + t * 200)
+                scaleSetters[index](1 + t * 0.14)
+                trackingSetters[index](-0.01 - t * 0.015)
+              }
               const move = (event: PointerEvent) => {
                 words.forEach((word, index) => {
                   const rect = word.getBoundingClientRect()
                   const distance = Math.hypot(event.clientX - (rect.left + rect.width / 2), event.clientY - (rect.top + rect.height / 2))
-                  const t = gsap.utils.clamp(0, 1, 1 - distance / 220)
-                  setters[index](450 + t * 200)
+                  apply(index, gsap.utils.clamp(0, 1, 1 - distance / 220))
                 })
               }
-              const leave = () => words.forEach((_, index) => setters[index](450))
+              const leave = () => words.forEach((_, index) => apply(index, 0))
               el.addEventListener('pointermove', move)
               el.addEventListener('pointerleave', leave)
               return () => {

@@ -16,7 +16,7 @@ export function HomeFaq() {
   return (
     <section ref={scope} className="scene home-faq" aria-labelledby="faq-title" data-beat="7">
       <div className="shell home-faq__grid">
-        <h2 id="faq-title" className="t-statement home-faq__title">
+        <h2 id="faq-title" className="t-statement home-faq__title panel">
           What founders ask us first.
         </h2>
         <Faq items={homeFaqs} />
@@ -34,6 +34,10 @@ export function Close() {
   return (
     <section ref={scope} className="scene close" aria-labelledby="close-title" data-beat="7">
       <div className="shell shell--wide close__grid">
+        {/* No `.panel` backing here — the scene's own solid fill (home.css)
+            already reads clearly against the persistent 3D layer, and a dark
+            panel card on top of a solid Electric Blue band would look like a
+            mistake, not a choice. */}
         <h2 id="close-title" className="t-display close__title">
           Your next stage of growth starts here.
         </h2>

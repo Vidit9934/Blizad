@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { MQ, useMotion } from '../motion/MotionProvider'
+import { useScrollVelocity } from '../motion/useScrollVelocity'
 import './atmosphere.css'
 
 /**
  * Fixed background stack behind every page (see DESIGN.md):
- * ground gradient → drifting lights → contour grid → signal canvas → grain → vignette.
- * The canvas only exists when motion is accepted.
+ * ground gradient → drifting lights → signal field → persistent cone → echo
+ * rings → grain → vignette. The canvas and the two scroll-reactive layers only
+ * exist when motion is accepted.
  */
 export function Atmosphere() {
   const { enabled } = useMotion()
@@ -14,21 +16,50 @@ export function Atmosphere() {
       <div className="atmosphere__ground" />
       <div className="atmosphere__light atmosphere__light--a" />
       <div className="atmosphere__light atmosphere__light--b" />
-      <div className="atmosphere__grid" />
       {enabled && <SignalCanvas />}
+      <div className="atmosphere__cone" />
+      {enabled && <EchoRings />}
       <div className="atmosphere__grain" />
       <div className="atmosphere__vignette" />
     </div>
   )
 }
 
-const GRID = 96
+/**
+ * Two or three concentric rings, centred on the same `--cone-x`/`--cone-y` point
+ * the 3D layer writes (see `Scene3DCanvas.tsx`), that expand and fade faster the
+ * faster the visitor scrolls — reusing the shared `useScrollVelocity()` signal,
+ * not a new listener. Transform/opacity only, no `filter: blur()`.
+ */
+function EchoRings() {
+  const a = useRef<HTMLDivElement>(null)
+  const b = useRef<HTMLDivElement>(null)
+  const c = useRef<HTMLDivElement>(null)
+
+  useScrollVelocity((velocity) => {
+    const scale = 1 + velocity * 0.9
+    const opacity = 0.12 + velocity * 0.22
+    for (const ring of [a, b, c]) {
+      const el = ring.current
+      if (!el) continue
+      el.style.setProperty('--echo-scale', scale.toFixed(3))
+      el.style.setProperty('--echo-opacity', opacity.toFixed(3))
+    }
+  })
+
+  return (
+    <div className="atmosphere__echo">
+      <div ref={a} className="atmosphere__echo-ring atmosphere__echo-ring--a" />
+      <div ref={b} className="atmosphere__echo-ring atmosphere__echo-ring--b" />
+      <div ref={c} className="atmosphere__echo-ring atmosphere__echo-ring--c" />
+    </div>
+  )
+}
 
 interface Mote {
-  /** Which grid line it rides, and along which axis. */
-  axis: 'x' | 'y'
-  line: number
-  pos: number
+  x: number
+  y: number
+  heading: number
   speed: number
   depth: number
   size: number
@@ -36,8 +67,10 @@ interface Mote {
 }
 
 /**
- * Signal motes travelling along the contour grid, like data on a wire.
- * Caps: ≤ 80 motes (40 on small screens), DPR ≤ 1.5, paused when the tab is hidden.
+ * Signal motes drifting freely (a gentle curving heading, not locked to a
+ * cartesian grid — the grid read as a circuit-board diagram, which this
+ * replaces). Same caps as before: ≤ 80 motes (40 on small screens), DPR ≤ 1.5,
+ * paused when the tab is hidden.
  */
 function SignalCanvas() {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -56,19 +89,15 @@ function SignalCanvas() {
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 }
     const finePointer = window.matchMedia(MQ.pointer).matches
 
-    const spawn = (): Mote => {
-      const axis = Math.random() < 0.6 ? 'x' : 'y'
-      const lines = Math.ceil((axis === 'x' ? height : width) / GRID)
-      return {
-        axis,
-        line: Math.floor(Math.random() * lines) * GRID,
-        pos: Math.random() * (axis === 'x' ? width : height),
-        speed: (0.25 + Math.random() * 0.9) * (Math.random() < 0.5 ? -1 : 1),
-        depth: 0.3 + Math.random() * 0.7,
-        size: 0.6 + Math.random() * 1.3,
-        glint: Math.random() < 0.08 ? Math.random() * 200 : 0,
-      }
-    }
+    const spawn = (): Mote => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      heading: Math.random() * Math.PI * 2,
+      speed: 0.25 + Math.random() * 0.9,
+      depth: 0.3 + Math.random() * 0.7,
+      size: 0.6 + Math.random() * 1.3,
+      glint: Math.random() < 0.08 ? Math.random() * 200 : 0,
+    })
 
     const resize = () => {
       width = window.innerWidth
@@ -89,31 +118,33 @@ function SignalCanvas() {
       pointer.y += (pointer.ty - pointer.y) * 0.05
 
       for (const mote of motes) {
-        mote.pos += mote.speed * mote.depth
-        const limit = mote.axis === 'x' ? width : height
-        if (mote.pos < -40 || mote.pos > limit + 40) Object.assign(mote, spawn(), { pos: mote.speed > 0 ? -30 : limit + 30 })
+        // A shallow, slowly-rotating heading — a curving drift rather than a
+        // locked horizontal/vertical wire.
+        mote.heading += (Math.random() - 0.5) * 0.03
+        mote.x += Math.cos(mote.heading) * mote.speed * mote.depth
+        mote.y += Math.sin(mote.heading) * mote.speed * mote.depth
 
-        const px = (mote.axis === 'x' ? mote.pos : mote.line) + pointer.x * mote.depth * 14
-        const py = (mote.axis === 'x' ? mote.line : mote.pos) + pointer.y * mote.depth * 14
-        const tail = 26 * mote.depth * Math.sign(mote.speed)
+        if (mote.x < -40 || mote.x > width + 40 || mote.y < -40 || mote.y > height + 40) {
+          Object.assign(mote, spawn())
+        }
+
+        const px = mote.x + pointer.x * mote.depth * 14
+        const py = mote.y + pointer.y * mote.depth * 14
+        const tailX = px - Math.cos(mote.heading) * 26 * mote.depth
+        const tailY = py - Math.sin(mote.heading) * 26 * mote.depth
         const alpha = 0.18 + mote.depth * 0.5
 
-        const gradient =
-          mote.axis === 'x'
-            ? ctx.createLinearGradient(px - tail, py, px, py)
-            : ctx.createLinearGradient(px, py - tail, px, py)
-        gradient.addColorStop(0, 'rgba(0,191,239,0)')
-        gradient.addColorStop(1, `rgba(0,191,239,${alpha * 0.55})`)
-        ctx.strokeStyle = gradient
+        // A flat alpha stroke, not a fresh CanvasGradient per mote per frame —
+        // creating up to 80 gradient objects every frame measurably cost more
+        // than the fade-to-transparent tail was worth (qa-scroll.mjs's
+        // frame-time gate at 1440px: this was the one remaining thing standing
+        // between a ~33ms and a ~16.7ms median once the 3D layer and the Builds
+        // fan were already accounted for — see DESIGN.md).
+        ctx.strokeStyle = `rgba(0,191,239,${alpha * 0.4})`
         ctx.lineWidth = mote.size * 0.8
         ctx.beginPath()
-        if (mote.axis === 'x') {
-          ctx.moveTo(px - tail, py)
-          ctx.lineTo(px, py)
-        } else {
-          ctx.moveTo(px, py - tail)
-          ctx.lineTo(px, py)
-        }
+        ctx.moveTo(tailX, tailY)
+        ctx.lineTo(px, py)
         ctx.stroke()
 
         let glow = 0

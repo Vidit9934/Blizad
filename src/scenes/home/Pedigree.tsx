@@ -2,14 +2,16 @@ import { useRef } from 'react'
 import { Icon } from '../../components/Icon'
 import { credentials, type Credential } from '../../content/credentials'
 import { useMagnetic } from '../../motion/pointer'
+import { usePaperScene } from '../../motion/usePaperScene'
 import { useSceneReveals } from '../../motion/useSceneReveals'
 
 /** Scene 7 — Believe (engineering). Names set as type with a real icon, never a borrowed logo. */
 export function Pedigree() {
   const scope = useRef<HTMLElement>(null)
   useSceneReveals(scope)
+  usePaperScene(scope)
   return (
-    <section ref={scope} className="scene scene--ice pedigree" aria-labelledby="pedigree-title" data-beat="3">
+    <section ref={scope} className="scene scene--ice pedigree" aria-labelledby="pedigree-title" data-beat="4">
       <div className="shell shell--wide">
         <h2 id="pedigree-title" className="t-statement pedigree__title">
           Engineering for Google and Thomson Reuters. Now building for you.

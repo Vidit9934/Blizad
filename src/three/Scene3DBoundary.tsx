@@ -4,7 +4,7 @@ import { useSceneTier } from '../motion/useSceneTier'
 import { SignatureStatic } from '../components/SignatureStatic'
 import './signature.css'
 
-type SceneModule = { Scene3DCanvas: ComponentType }
+type SceneModule = { Scene3DCanvas: ComponentType<{ tier: 'full' | 'light' }> }
 
 /**
  * The only file in `Layout.tsx`'s import graph that may ever lead to `three`/
@@ -37,5 +37,5 @@ export function Scene3DBoundary() {
   }, [tier])
 
   if (!enabled || tier === 'static' || tier === null || !mod) return <SignatureStatic />
-  return <mod.Scene3DCanvas />
+  return <mod.Scene3DCanvas tier={tier} />
 }

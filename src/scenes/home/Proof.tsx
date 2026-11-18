@@ -1,9 +1,10 @@
 import { useRef } from 'react'
 import { Icon } from '../../components/Icon'
+import { MagnitudeBar } from '../../components/MagnitudeBar'
 import { PlaceholderTag } from '../../components/PlaceholderTag'
-import { RadialProgress } from '../../components/RadialProgress'
 import { proofAttribution, proofFigures, type ProofFigure } from '../../content/proof'
 import { useSpotlight, useTilt } from '../../motion/pointer'
+import { usePaperScene } from '../../motion/usePaperScene'
 import { useSceneReveals } from '../../motion/useSceneReveals'
 
 /**
@@ -15,9 +16,10 @@ import { useSceneReveals } from '../../motion/useSceneReveals'
 export function Proof() {
   const scope = useRef<HTMLElement>(null)
   useSceneReveals(scope)
+  usePaperScene(scope)
   const allConfirmed = proofFigures.every((figure) => figure.confirmed)
   return (
-    <section ref={scope} className="scene scene--ice proof" aria-labelledby="proof-title" data-product-screen data-beat="1">
+    <section ref={scope} className="scene scene--ice proof" aria-labelledby="proof-title" data-product-screen data-beat="4">
       <div className="shell shell--wide">
         <div className="proof__head">
           <h2 id="proof-title" className="t-display">
@@ -26,13 +28,16 @@ export function Proof() {
           <p className="proof__badge">Seven years in digital marketing</p>
         </div>
 
-        <div className="proof__method">
-          <Icon name="shield-check" size={22} />
+        <details className="proof__method">
+          <summary>
+            <Icon name="shield-check" size={22} />
+            How we measure this
+          </summary>
           <p>
             {proofAttribution}
             <PlaceholderTag confirmed={allConfirmed} label="Figures to verify" />
           </p>
-        </div>
+        </details>
 
         <dl className="proof__grid">
           {proofFigures.map((figure) => (
@@ -55,7 +60,7 @@ function ProofTile({ figure }: { figure: ProofFigure }) {
       <span className="proof__spotlight" aria-hidden="true" />
       <div className="proof__visual" aria-hidden="true">
         <Icon name={figure.icon} className="proof__icon icon-bounce" size={22} />
-        <RadialProgress value={figure.trend ?? figure.weight / 3} size={figure.weight === 3 ? 56 : 44} />
+        <MagnitudeBar value={figure.weight / 3} size={figure.weight === 3 ? 56 : 44} className="proof__bars" />
       </div>
       {/* dt before dd for correct <dl> semantics; CSS `order` (not DOM order) puts the value visually first. */}
       <dt className="proof__label">{figure.label}</dt>

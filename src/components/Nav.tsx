@@ -96,7 +96,9 @@ export function Nav() {
   const whatsapp = whatsappUrl(`Hi ${site.name}, I'd like to talk about a project.`)
 
   return (
-    <header className="nav" data-menu={menuOpen ? 'open' : 'closed'}>
+    <>
+      <div className="mega-dim" data-open={menuOpen} aria-hidden="true" onClick={() => setMenuOpen(false)} />
+      <header className="nav" data-menu={menuOpen ? 'open' : 'closed'}>
       <div className="nav__bar shell shell--wide">
         <Link to="/" className="nav__brand" aria-label={`${site.name} home`}>
           <BoltIcon className="nav__mark" />
@@ -229,6 +231,7 @@ export function Nav() {
           </a>
         </div>
       </div>
-    </header>
+      </header>
+    </>
   )
 }

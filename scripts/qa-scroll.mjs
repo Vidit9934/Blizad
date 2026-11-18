@@ -58,12 +58,10 @@ for (const width of widths) {
   const fonts = await page.evaluate(async () => {
     await document.fonts.ready
     return {
-      jakarta: document.fonts.check('600 48px "Plus Jakarta Sans Variable"'),
-      inter: document.fonts.check('400 16px "Inter Variable"'),
+      bricolage: document.fonts.check('600 48px "Bricolage Grotesque Variable"'),
     }
   })
-  gate(`${width}: Plus Jakarta Sans loaded`, fonts.jakarta)
-  gate(`${width}: Inter loaded`, fonts.inter)
+  gate(`${width}: Bricolage Grotesque loaded`, fonts.bricolage)
 
   // Per-scene screenshots + word budget
   const scenes = await page.evaluate(
@@ -102,8 +100,8 @@ for (const width of widths) {
     await page.screenshot({ path: `${out}/${width}-home-${String(scene.index).padStart(2, '0')}-${scene.cls}.png` })
     if (width === 1440) {
       const exempt = EXEMPT.includes(scene.cls)
-      gate(`words ${scene.cls}: display ≤ 20`, words.display <= 20, `${words.display}`)
-      if (!exempt) gate(`words ${scene.cls}: visible ≤ 70`, words.visible <= 70, `${words.visible}`)
+      gate(`words ${scene.cls}: display ≤ 12`, words.display <= 12, `${words.display}`)
+      if (!exempt) gate(`words ${scene.cls}: visible ≤ 45`, words.visible <= 45, `${words.visible}`)
     }
   }
 

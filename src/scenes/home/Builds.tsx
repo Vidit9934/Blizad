@@ -4,6 +4,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import { Icon } from '../../components/Icon'
+import { CurrentPath } from '../../components/CurrentPath'
 import { builds, techIcon, type Build } from '../../content/builds'
 import { primaryCta } from '../../content/site'
 import { MQ } from '../../motion/MotionProvider'
@@ -14,6 +15,9 @@ import { track } from '../../lib/track'
 /**
  * Scene 6 — Proof of craft. Pinned on wide screens: vertical scroll travels the
  * track sideways. Narrow, touch or reduced motion: a native swipe row with snap.
+ * v9: each real project sits on its own colour-field band (a palette tint, not
+ * a new hue) with a large faint CurrentPath — the current motif's third scale,
+ * after the 3D hero strand and Doors' branching diagram.
  */
 export function Builds() {
   const scope = useRef<HTMLElement>(null)
@@ -30,6 +34,7 @@ export function Builds() {
         if (!list || !scope.current) return
         scope.current.classList.add('builds--pinned')
         const distance = () => list.scrollWidth - window.innerWidth
+        const panels = () => Array.from(list.children) as HTMLElement[]
         gsap.to(list, {
           x: () => -distance(),
           ease: 'none',
@@ -42,10 +47,28 @@ export function Builds() {
             invalidateOnRefresh: true,
             // Netbramha-inspired: a dash/dot readout of the same pinned-scroll
             // progress this ScrollTrigger already computes — no new listener.
-            onUpdate: (self) => scope.current?.style.setProperty('--builds-progress', self.progress.toFixed(4)),
+            onUpdate: (self) => {
+              scope.current?.style.setProperty('--builds-progress', self.progress.toFixed(4))
+              // Curved CSS 3D fan (reinterpreting KMF's hero card-fan technique for a
+              // gallery): each panel's rotateY/translateZ comes from its own position
+              // relative to the viewport centre — reads from offsetLeft/offsetWidth
+              // (layout values a `transform` never invalidates, so no reflow is forced
+              // here) and the already-known current track offset, no extra scroll
+              // listener, no new pin.
+              const currentX = -distance() * self.progress
+              const viewportCenter = window.innerWidth / 2
+              for (const panel of panels()) {
+                const panelCenter = panel.offsetLeft + panel.offsetWidth / 2 + currentX
+                const offset = gsap.utils.clamp(-1, 1, (panelCenter - viewportCenter) / viewportCenter)
+                panel.style.transform = `perspective(1400px) rotateY(${offset * -16}deg) translateZ(${(1 - Math.abs(offset)) * 60 - 20}px)`
+              }
+            },
           },
         })
-        return () => scope.current?.classList.remove('builds--pinned')
+        return () => {
+          scope.current?.classList.remove('builds--pinned')
+          for (const panel of panels()) panel.style.transform = ''
+        }
       })
     },
     { scope },
@@ -84,8 +107,9 @@ export function Builds() {
 function BuildPanel({ build, index }: { build: Build; index: number }) {
   const frame = useRef<HTMLDivElement>(null)
   useTilt(frame, { maxDeg: 5 })
+  const tint = (index % 3) + 1
   return (
-    <li className="build">
+    <li className={`build build--tint-${tint}`}>
       <div ref={frame} className="build__frame">
         <span className="build__category-chip">{build.category}</span>
         {build.screenshot ? (
@@ -115,6 +139,7 @@ function BuildPanel({ build, index }: { build: Build; index: number }) {
         </div>
       </div>
       <div className="build__meta">
+        <CurrentPath nodes={[{ id: 'a' }, { id: 'b' }]} mode="linear" className="build__motif" />
         <h3 className="build__name">{build.name}</h3>
         <a
           href={build.url}
