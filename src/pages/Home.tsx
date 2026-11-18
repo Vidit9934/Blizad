@@ -1,50 +1,41 @@
 import { Seo, faqLd } from '../components/Seo'
 import { homeFaqs } from '../content/faq'
 import { Hero } from '../scenes/home/Hero'
-import { Ticker } from '../scenes/home/Ticker'
-import { Dream } from '../scenes/home/Dream'
-import { Proof } from '../scenes/home/Proof'
-import { Doors } from '../scenes/home/Doors'
-import { SearchEverywhere } from '../scenes/home/SearchEverywhere'
+import { OfferingMarquee } from '../scenes/home/OfferingMarquee'
+import { SplitScene } from '../scenes/home/SplitScene'
+import { ProofNumbers } from '../scenes/home/ProofNumbers'
+import { MarketplaceShelf } from '../scenes/home/MarketplaceShelf'
+import { StackScene } from '../scenes/home/StackScene'
+import { ToolsSpotlight } from '../scenes/home/ToolsSpotlight'
+import { Manifesto } from '../scenes/home/Manifesto'
+import { HowItWorks } from '../scenes/home/HowItWorks'
+import { WorldTint } from '../components/immersive/WorldTint'
 import { Builds } from '../scenes/home/Builds'
-import { Pedigree } from '../scenes/home/Pedigree'
-import { Voices } from '../scenes/home/Voices'
-import { Path } from '../scenes/home/Path'
-import { Pipeline } from '../scenes/home/Pipeline'
-import { Estimator } from '../scenes/home/Estimator'
 import { Founders } from '../scenes/home/Founders'
-import { Hub } from '../scenes/home/Hub'
 import { Close, HomeFaq } from '../scenes/home/Close'
 import '../scenes/home/home.css'
 
-/**
- * v9 scene order — reordered from a stock funnel (hero, statement, numbers...)
- * into: arrive (0) → breathe (1) → what we do (2) → proof gallery, alone (3) →
- * trust cluster (4) → how we work (5) → decide (6) → final trust + act (7).
- * See DESIGN.md's v9 chapter table for the full rationale.
- */
+/** v10 marketplace order: arrive, breadth, one counter, proof, choose, shipped, team, answers, act. */
 export function Component() {
   return (
     <>
       <Seo
-        title="Blizad | Performance marketing, SEO and web development in Raipur"
-        description="Blizad is a Raipur growth company. One team runs performance marketing, SEO, GEO and AEO, full-stack development and hosting. Built for momentum."
+        title="Blizad | The growth marketplace for marketing, tech and tools"
+        description="Hire Blizad for Meta, Google and LinkedIn ads, SEO, GEO and AEO; commission websites, web apps and hosting; or use our tools. One marketplace, built for momentum."
         path="/"
         jsonLd={[faqLd(homeFaqs)]}
       />
+      <WorldTint />
       <Hero />
-      <Ticker />
-      <Dream />
-      <Doors />
-      <SearchEverywhere />
+      <OfferingMarquee />
+      <SplitScene />
+      <ProofNumbers />
+      <MarketplaceShelf />
+      <StackScene />
+      <ToolsSpotlight />
+      <Manifesto />
       <Builds />
-      <Pedigree />
-      <Proof />
-      <Path />
-      <Pipeline />
-      <Estimator />
-      <Hub />
-      <Voices />
+      <HowItWorks />
       <Founders />
       <HomeFaq />
       <Close />

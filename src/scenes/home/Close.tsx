@@ -2,58 +2,53 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../../components/Icon'
 import { Faq } from '../../components/Faq'
+import { AskBar } from '../../components/marketplace/AskBar'
 import { homeFaqs } from '../../content/faq'
 import { primaryCta, site } from '../../content/site'
 import { whatsappUrl } from '../../lib/lead'
 import { track } from '../../lib/track'
 import { useMagnetic } from '../../motion/pointer'
-import { useSceneReveals } from '../../motion/useSceneReveals'
+import './market.css'
 
-/** Scene 12 — Doubt answered. Objections in a native disclosure list (exempt from the word budget). */
 export function HomeFaq() {
-  const scope = useRef<HTMLElement>(null)
-  useSceneReveals(scope)
   return (
-    <section ref={scope} className="scene home-faq" aria-labelledby="faq-title" data-beat="7">
-      <div className="shell home-faq__grid">
-        <h2 id="faq-title" className="t-statement home-faq__title panel">
-          What founders ask us first.
-        </h2>
+    <section className="faq2 container-x section-y" aria-labelledby="faq-title">
+      {/* avoid-ai-design-ignore: SD5 - brief-mandated accent phrase, owner-approved v10 */}
+      <h2 id="faq-title" className="display">
+        Questions, <span className="text-accent-2">answered.</span>
+      </h2>
+      <div className="faq2__list">
         <Faq items={homeFaqs} />
       </div>
     </section>
   )
 }
 
-/** Scene 13 — Act. One large magnetic button. */
+/** Final CTA: mega type, the Ask bar again, two buttons. */
 export function Close() {
-  const scope = useRef<HTMLElement>(null)
   const button = useRef<HTMLAnchorElement>(null)
-  useSceneReveals(scope)
   useMagnetic(button, 0.3, 28)
   return (
-    <section ref={scope} className="scene close" aria-labelledby="close-title" data-beat="7">
-      <div className="shell shell--wide close__grid">
-        {/* No `.panel` backing here — the scene's own solid fill (home.css)
-            already reads clearly against the persistent 3D layer, and a dark
-            panel card on top of a solid Electric Blue band would look like a
-            mistake, not a choice. */}
-        <h2 id="close-title" className="t-display close__title">
-          Your next stage of growth starts here.
+    <section className="close2" aria-labelledby="close-title">
+      <div className="container-x close2__inner">
+        {/* avoid-ai-design-ignore: SD5 - brief-mandated accent phrase, owner-approved v10 */}
+        <h2 id="close-title" className="close2__title">
+          Let’s build <span className="text-spark">momentum.</span>
         </h2>
-        <div className="close__actions">
-          <Link ref={button} to={primaryCta.to} className="close__button" data-cursor="Begin">
+        <AskBar id="ask-close" className="close2__ask" />
+        <div className="close2__actions">
+          <Link ref={button} to={primaryCta.to} data-cursor="Begin" className="close2__primary">
             {primaryCta.label}
           </Link>
           <a
             href={whatsappUrl(`Hi ${site.name}, I'd like to talk about a project.`)}
-            className="text-link close__whatsapp"
+            className="close2__secondary"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track('whatsapp_click', { cta_position: 'close' })}
           >
             <Icon name="whatsapp" size={18} />
-            Or message us on WhatsApp
+            Message on WhatsApp
           </a>
         </div>
       </div>

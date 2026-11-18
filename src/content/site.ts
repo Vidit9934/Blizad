@@ -13,6 +13,8 @@ export const site = {
   legalName: { value: 'Blizad Digital Private Limited', confirmed: false } as Claim<string>,
   parentCompany: { value: 'KMF Media Private Limited', confirmed: false } as Claim<string>,
   tagline: 'Built for momentum.',
+  /** Hero status line. Renders only once the owners confirm they are taking projects. */
+  statusLine: { value: 'Taking projects for December', confirmed: false } as Claim<string>,
   city: 'Raipur',
   region: 'Chhattisgarh',
   country: 'India',

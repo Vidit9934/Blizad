@@ -1,0 +1,94 @@
+/* Marquee */
+.marquee {
+  overflow: hidden;
+  width: 100%;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-s, 50s) linear infinite;
+}
+.marquee__track--rev {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee__track {
+  animation-duration: calc(var(--marquee-s, 50s) * 2);
+}
+.marquee__set {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+@keyframes marquee-x {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Rotating badge */
+.rbadge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  color: var(--spark);
+  text-decoration: none;
+}
+.rbadge__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: rbadge-spin 18s linear infinite;
+}
+.rbadge__text {
+  fill: currentColor;
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.rbadge:hover .rbadge__ring {
+  animation-duration: 6s;
+}
+@keyframes rbadge-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track,
+  .rbadge__ring {
+    animation: none;
+  }
+}
+
+/* BoltFallback */
+.bolt-fallback {
+  transition: opacity 0.7s;
+}
+.bolt-fallback__glow {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--spark) 30%, transparent), transparent 65%);
+}
+html[data-webgl="on"] .bolt-fallback {
+  opacity: 0;
+}
+
+/* canvas sits behind content; only transparent sections show it */
+#main {
+  position: relative;
+  z-index: 1;
+}
+
+/* World tint: let the blue body colour show through the dark atmosphere while a tinted section is centred */
+.atmosphere {
+  transition: opacity 0.9s var(--ease-out);
+}
+html[data-tint='on'] .atmosphere {
+  opacity: 0;
+}

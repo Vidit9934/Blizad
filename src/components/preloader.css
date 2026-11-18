@@ -1,47 +1,64 @@
+@property --pre-n {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 80;
   display: grid;
   place-items: center;
-  background: radial-gradient(60% 60% at 50% 45%, #0b2240 0%, var(--midnight) 55%, var(--midnight-deep) 100%);
+  background: var(--bg);
   pointer-events: none;
-  animation: preloader-lift 0.8s var(--ease-out) 1.25s forwards;
+  animation: preloader-lift 0.85s cubic-bezier(0.65, 0, 0.35, 1) 1.45s forwards;
 }
 
-.preloader__mark {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.preloader svg {
-  width: 72px;
-  height: 72px;
+.preloader__bolt {
+  width: clamp(64px, 6vw, 80px);
+  height: auto;
   fill: none;
-  stroke: var(--cyan);
+  stroke: var(--spark);
   stroke-width: 3;
-  stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-.preloader path {
+.preloader__bolt path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: preloader-draw 0.9s var(--ease-out) 0.1s forwards;
+  animation: preloader-draw 1.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-.preloader path + path {
-  animation-delay: 0.35s;
+.preloader__tag,
+.preloader__count {
+  position: absolute;
+  bottom: 32px;
+  font-family: var(--ff-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.preloader__tag {
+  left: var(--gutter);
+  color: var(--fg-muted);
+}
+.preloader__count {
+  right: var(--gutter);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  animation: preloader-count 1.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  counter-reset: pre var(--pre-n);
+}
+.preloader__count::after {
+  content: counter(pre, decimal-leading-zero) '%';
 }
 
-.preloader__word {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 2.5rem;
-  letter-spacing: -0.04em;
-  clip-path: inset(0 100% 0 0);
-  animation: preloader-word 0.7s var(--ease-out) 0.55s forwards;
+.preloader__flash {
+  position: absolute;
+  inset: 0;
+  background: var(--spark);
+  opacity: 0;
+  animation: preloader-flash 0.16s linear 1.3s forwards;
 }
 
 @keyframes preloader-draw {
@@ -49,13 +66,16 @@
     stroke-dashoffset: 0;
   }
 }
-
-@keyframes preloader-word {
+@keyframes preloader-count {
   to {
-    clip-path: inset(0 0 0 0);
+    --pre-n: 100;
   }
 }
-
+@keyframes preloader-flash {
+  50% {
+    opacity: 0.18;
+  }
+}
 @keyframes preloader-lift {
   to {
     transform: translateY(-100%);

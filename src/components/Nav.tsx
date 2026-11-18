@@ -1,19 +1,13 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { credentials } from '../content/credentials'
-import { proofFigures } from '../content/proof'
+import { AISLES, AISLE_ORDER, OFFERINGS } from '../content/offerings'
+import { useMarketplace } from './marketplace/store'
 import { primaryCta, site } from '../content/site'
-import { serviceGroups, servicesInGroup } from '../content/services'
 import { whatsappUrl } from '../lib/lead'
 import { track } from '../lib/track'
 import { BoltIcon } from './BoltMark'
 import { Icon } from './Icon'
-import { PlaceholderTag } from './PlaceholderTag'
 import './nav.css'
-
-/** Unfoldmart-inspired: the mega-menu carries a small "why us" stat strip beside the links — real, already-honoured figures, not new copy. */
-const brandsFigure = proofFigures.find((figure) => figure.label === 'Brands worked with')
-const clientCredentials = credentials.filter((credential) => credential.kind === 'client')
 
 const links = [
   { to: '/work', label: 'Work' },
@@ -26,6 +20,7 @@ const links = [
  * mega-menu (hover, click or keyboard); on small screens a sheet opens under the bar.
  */
 export function Nav() {
+  const { setPaletteOpen } = useMarketplace()
   const [menuOpen, setMenuOpen] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
   // The pre-renderer reports paths without the leading slash ("contact");
@@ -119,21 +114,25 @@ export function Nav() {
                 window.clearTimeout(closeTimer.current) // a pending hover-close must not undo this
                 setMenuOpen((open) => (mouseWithHover ? true : !open))
               }}
-              data-active={isActive('/services') || undefined}
+              data-active={['/marketing', '/tech', '/tools'].some(isActive) || undefined}
             >
-              Services
+              Marketplace
               <Icon name="chevron" size={16} className="nav__chevron" />
             </button>
             <div id={menuId} className="mega" hidden={!menuOpen}>
               <div className="mega__inner shell shell--wide">
-                {serviceGroups.map((group) => (
-                  <div key={group.id} className="mega__group">
-                    <p className="mega__title">{group.name}</p>
+                {AISLE_ORDER.map((aisle) => (
+                  <div key={aisle} className="mega__group">
+                    <p className="mega__title">
+                      <span className={`mega__dot mega__dot--${aisle}`} aria-hidden />
+                      {AISLES[aisle].label}
+                    </p>
                     <ul role="list">
-                      {servicesInGroup(group.id).map((service) => (
-                        <li key={service.slug}>
-                          <Link to={`/services/${service.slug}`} className="mega__link">
-                            {service.name}
+                      {OFFERINGS.filter((o) => o.aisle === aisle).map((o) => (
+                        <li key={o.id}>
+                          <Link to={o.href} className="mega__link">
+                            {o.name}
+                            <span className="mega__outcome">{o.outcome}</span>
                           </Link>
                         </li>
                       ))}
@@ -141,25 +140,16 @@ export function Nav() {
                   </div>
                 ))}
                 <div className="mega__last">
-                  <Link to="/services" className="mega__all text-link">
-                    All services
-                  </Link>
-                  <div className="mega__aside">
-                    <p className="mega__aside-title">Why Blizad</p>
-                    {brandsFigure && (
-                      <p className="mega__stat">
-                        <span className="mega__stat-value">{brandsFigure.value}</span>
-                        <span className="mega__stat-label">{brandsFigure.label}</span>
-                        <PlaceholderTag confirmed={brandsFigure.confirmed} />
-                      </p>
-                    )}
-                    <p className="mega__stat">
-                      <span className="mega__stat-value">{clientCredentials.length}</span>
-                      <span className="mega__stat-label">
-                        Engineering credentials, as a client ({clientCredentials.map((c) => c.name).join(', ')})
-                      </span>
-                    </p>
-                  </div>
+                  <button
+                    type="button"
+                    className="mega__all text-link"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      setPaletteOpen(true)
+                    }}
+                  >
+                    Not sure? Ask Blizad
+                  </button>
                 </div>
               </div>
             </div>
@@ -172,6 +162,10 @@ export function Nav() {
         </nav>
 
         <div className="nav__actions">
+          <button type="button" className="nav__ask" onClick={() => setPaletteOpen(true)} aria-label="Ask Blizad (Ctrl K)">
+            <span>Ask</span>
+            <kbd>Ctrl K</kbd>
+          </button>
           <a
             href={whatsapp}
             className="btn btn--quiet nav__whatsapp"
@@ -201,24 +195,31 @@ export function Nav() {
       <div id={sheetId} className="sheet" hidden={!sheetOpen}>
         <div className="sheet__inner shell">
           <nav aria-label="Mobile">
-            {serviceGroups.map((group) => (
-              <details key={group.id} className="sheet__group">
+            {AISLE_ORDER.map((aisle) => (
+              <details key={aisle} className="sheet__group">
                 <summary>
-                  {group.name}
+                  {AISLES[aisle].label}
                   <Icon name="plus" size={18} />
                 </summary>
                 <ul role="list">
-                  {servicesInGroup(group.id).map((service) => (
-                    <li key={service.slug}>
-                      <Link to={`/services/${service.slug}`}>{service.name}</Link>
+                  {OFFERINGS.filter((o) => o.aisle === aisle).map((o) => (
+                    <li key={o.id}>
+                      <Link to={o.href}>{o.name}</Link>
                     </li>
                   ))}
                 </ul>
               </details>
             ))}
-            <Link to="/services" className="sheet__link">
-              All services
-            </Link>
+            <button
+              type="button"
+              className="sheet__link"
+              onClick={() => {
+                setSheetOpen(false)
+                setPaletteOpen(true)
+              }}
+            >
+              Ask Blizad
+            </button>
             {links.map((link) => (
               <Link key={link.to} to={link.to} className="sheet__link">
                 {link.label}

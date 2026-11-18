@@ -1,0 +1,29 @@
+/* Tailwind v4 utilities only — no preflight, so base.css stays the reset (see CLAUDE.md).
+   Layer order is declared identically in base.css so bundle order cannot change the cascade. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-elev-2: var(--bg-elev-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-2: var(--accent-2);
+  --color-spark: var(--spark);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --font-display: var(--ff-display);
+  --font-sans: var(--ff-body);
+  --font-mono: var(--ff-mono);
+  --radius-card: var(--r-lg);
+  --radius-btn: var(--r-btn);
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --text-mega: clamp(5rem, 15vw, 19rem);
+  --text-h2: clamp(2.5rem, 6vw, 6rem);
+  --text-h3: clamp(1.75rem, 3vw, 2.75rem);
+}

@@ -1,6 +1,6 @@
 # Blizad site — working notes
 
-Showcase site for Blizad (Raipur): Sourav Yadav (Krantiveer), Founder & CEO, and Vidit Vaibhav, Co-founder & CTO.
+Growth-marketplace site for Blizad (Raipur; Marketing, Tech, Tools): Sourav Yadav (Krantiveer), Founder & CEO, and Vidit Vaibhav, Co-founder & CTO.
 **Read `DESIGN.md` before touching any UI** — it is the design contract (palette, type, motion, word budget, refusals).
 
 ## Commands
@@ -17,9 +17,14 @@ Showcase site for Blizad (Raipur): Sourav Yadav (Krantiveer), Founder & CEO, and
   - `credentials.ts`: add new credentials here. Client work must keep the "as a client" wording; names only, never third-party logos.
 - `src/motion/` — `MotionProvider` owns the single Lenis instance and the GSAP ticker. Everything else creates triggers inside `useGSAP` scopes. Media queries live in `MQ`.
 - `src/components/` — shared chrome (Nav, Footer, Atmosphere, Seo, LeadForm, Faq, BoltMark…).
-- `src/scenes/home/` — one file per home scene; `home.css` holds scene styles. `src/pages/` — route shells.
+- `src/components/{marketplace,hero,immersive,ui}/` — Ask system (`store`, `AskBar`, `AskPalette`), `AisleHeadline`, 3D state/fallback/world tint/proximity wordmark, small UI primitives (`LoopBand`, `RollText`, `RotatingBadge`, `Glyphs`).
+- `src/content/offerings.ts` — the marketplace data model (aisles, goals, offerings, `matchOfferings`); status/price/eta are `Claim`s.
+- `src/scenes/home/` — one file per home scene; `market.css` (v10 scenes), `hero.css`, legacy `home.css` (Builds/Close leftovers; contains dead rules from deleted v9 scenes, prune when convenient). `src/pages/` — route shells.
 
 ## Contracts and gotchas
+- **Tailwind v4 has no preflight here** (`src/styles/tailwind.css`; `base.css` is wrapped in `@layer base`). Unlayered component CSS beats utilities; do not re-add preflight. TypeScript 7 has no `baseUrl`: the `@` alias is `paths` with `./src/*`.
+- **framer-motion vs GSAP**: GSAP/Lenis own pins and ScrollTrigger; framer owns component layout/presence and `useScroll`. Never animate one element with both. The 3D layer is `src/three/ImmersiveCanvas.tsx`, loaded only via the effect-gated dynamic import in `Scene3DBoundary.tsx` (never `React.lazy`).
+- **Never test a hash-only navigation after a rebuild** — the tab keeps the old bundle and shows phantom hydration errors (#418/#425). Hard-load another URL first.
 - **SSG paths have no leading slash** during pre-render (`contact`, not `/contact`). Anything that renders differently per path must normalise it (see `Nav.tsx`), or React hydration fails (#418) and the server HTML is thrown away.
 - **Never touch `window`/`document` during render** — only in effects/`useGSAP`. Pages are pre-rendered in Node.
 - **Hosting must serve `/x` from `/x/index.html`** (Netlify, Vercel, Cloudflare Pages do by default). Plain SPA fallback serves the home page for every URL, which breaks SEO and hydration. `vite.config.ts` mirrors the correct behaviour for local preview only.

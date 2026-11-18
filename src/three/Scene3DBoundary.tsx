@@ -1,8 +1,6 @@
 import { useEffect, useState, type ComponentType } from 'react'
 import { useMotion } from '../motion/MotionProvider'
 import { useSceneTier } from '../motion/useSceneTier'
-import { SignatureStatic } from '../components/SignatureStatic'
-import './signature.css'
 
 type SceneModule = { Scene3DCanvas: ComponentType<{ tier: 'full' | 'light' }> }
 
@@ -11,7 +9,7 @@ type SceneModule = { Scene3DCanvas: ComponentType<{ tier: 'full' | 'light' }> }
  * `@react-three/*`. This file itself must NEVER statically import them.
  *
  * Why this is safe under `vite-react-ssg`'s real Node prerendering (not just
- * "structurally similar" to a client-only app): the dynamic `import('./Scene3DCanvas')`
+ * "structurally similar" to a client-only app): the dynamic `import('./ImmersiveCanvas')`
  * call sits inside a `useEffect` body, which React/Node never executes outside a
  * committed DOM. A `React.lazy` + `Suspense` version would NOT be safe here —
  * `vite-react-ssg`'s prerender still invokes a lazy factory's `import()` during
@@ -28,7 +26,7 @@ export function Scene3DBoundary() {
   useEffect(() => {
     if (tier !== 'full' && tier !== 'light') return
     let cancelled = false
-    import('./Scene3DCanvas').then((m) => {
+    import('./ImmersiveCanvas').then((m) => {
       if (!cancelled) setMod(m)
     })
     return () => {
@@ -36,6 +34,6 @@ export function Scene3DBoundary() {
     }
   }, [tier])
 
-  if (!enabled || tier === 'static' || tier === null || !mod) return <SignatureStatic />
+  if (!enabled || tier === 'static' || tier === null || !mod) return null /* the hero renders BoltFallback itself */
   return <mod.Scene3DCanvas tier={tier} />
 }

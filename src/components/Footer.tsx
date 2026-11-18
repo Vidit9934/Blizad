@@ -1,68 +1,65 @@
 import { Link } from 'react-router-dom'
-import { site } from '../content/site'
-import { serviceGroups } from '../content/services'
+import { site, primaryCta } from '../content/site'
+import { AISLES, AISLE_ORDER, OFFERINGS } from '../content/offerings'
+import { ProximityWordmark } from './immersive/ProximityWordmark'
 import { PlaceholderTag } from './PlaceholderTag'
 import './footer.css'
+import '../scenes/home/market.css'
 
-/** Built from what the site actually has: a giant wordmark, two link columns, real details. */
+const company = [
+  { to: '/work', label: 'Work' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+  { to: '/privacy', label: 'Privacy' },
+]
+
 export function Footer() {
   return (
-    <footer className="footer">
-      <div className="shell shell--wide">
-        <div className="footer__top">
-          <div className="footer__contact">
-            <p className="footer__line">One team for the ads, the search and the code.</p>
-            <p>
-              <a href={`mailto:${site.email.value}`} className="text-link">
-                {site.email.value}
-              </a>
-              <PlaceholderTag confirmed={site.email.confirmed} />
-            </p>
-            <p>
-              <a href={`tel:+${site.whatsapp.value}`} className="text-link">
-                {site.phoneDisplay.value}
-              </a>
-              <PlaceholderTag confirmed={site.phoneDisplay.confirmed} />
-            </p>
-            <p className="t-small">
-              {site.city}, {site.region}, {site.country}
-            </p>
-          </div>
-          <nav className="footer__cols" aria-label="Footer">
-            <ul role="list">
-              {serviceGroups.map((group) => (
-                <li key={group.id}>
-                  <Link to={`/services#${group.id}`}>{group.name}</Link>
-                </li>
-              ))}
-            </ul>
-            <ul role="list">
-              <li>
-                <Link to="/work">Work</Link>
-              </li>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
-              <li>
-                <Link to="/contact">Contact</Link>
-              </li>
-              <li>
-                <Link to="/privacy">Privacy</Link>
-              </li>
-            </ul>
-          </nav>
+    <footer className="footer2" data-3d="footer">
+      <div className="footer2__inner">
+        <div className="footer2__lead">
+          <p className="footer2__tag">{site.tagline}</p>
+          <Link to={primaryCta.to} className="footer2__cta" data-cursor="Begin">
+            {primaryCta.label}
+          </Link>
         </div>
 
-        <p className="footer__wordmark" aria-hidden="true">
-          {site.name}
-        </p>
+        <nav className="footer2__cols" aria-label="Footer">
+          {AISLE_ORDER.map((a) => (
+            <div key={a}>
+              <p className="footer2__head">{AISLES[a].label}</p>
+              <ul role="list">
+                {OFFERINGS.filter((o) => o.aisle === a).map((o) => (
+                  <li key={o.id}>
+                    <Link to={o.href}>{o.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div>
+            <p className="footer2__head">Company</p>
+            <ul role="list">
+              {company.map((c) => (
+                <li key={c.to}>
+                  <Link to={c.to}>{c.label}</Link>
+                </li>
+              ))}
+              <li>
+                <a href={`mailto:${site.email.value}`}>{site.email.value}</a>
+                <PlaceholderTag confirmed={site.email.confirmed} />
+              </li>
+            </ul>
+          </div>
+        </nav>
 
-        <div className="footer__legal">
+        <ProximityWordmark text="BLIZAD" />
+
+        <div className="footer2__legal">
           <p>
-            © {new Date().getFullYear()} {site.legalName.value}, a {site.parentCompany.value} company.
-            <PlaceholderTag confirmed={site.legalName.confirmed && site.parentCompany.confirmed} label="To verify" />
+            © {new Date().getFullYear()} {site.legalName.value} · {site.city}, {site.country}
+            <PlaceholderTag confirmed={site.legalName.confirmed} label="To verify" />
           </p>
-          <p>{site.tagline}</p>
         </div>
       </div>
     </footer>

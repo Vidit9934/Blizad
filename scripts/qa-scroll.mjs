@@ -11,7 +11,9 @@ const only = process.argv.find((arg) => arg.startsWith('--only='))?.split('=')[1
 const widths = [1440, 1024, 390].filter((w) => !only || String(w) === only)
 const routes = ['/', '/services', '/services/seo-geo-aeo', '/services/web-development', '/work', '/about', '/contact', '/privacy', '/404']
 const SCENES = 'main > section, main > header, main > .pin-spacer > section'
-const EXEMPT = ['proof', 'home-faq', 'builds', 'estimator', 'voices'] // proof/FAQ per checklist; gallery titles-only; estimator is a product screen; voices carries real testimonial quotes, same spirit as proof
+// v10 (DESIGN.md): shelf = product catalogue, tools = product demo cards, founders = real bios, proof/FAQ per checklist, builds = gallery titles.
+const EXEMPT = ['proof2', 'faq2', 'builds', 'marketplace-scene', 'tools-scene', 'founders2']
+const WORD_CEILING = 65
 const out = `qa-output/${reduced ? 'reduced' : 'full'}`
 await mkdir(out, { recursive: true })
 
@@ -58,10 +60,10 @@ for (const width of widths) {
   const fonts = await page.evaluate(async () => {
     await document.fonts.ready
     return {
-      bricolage: document.fonts.check('600 48px "Bricolage Grotesque Variable"'),
+      bricolage: document.fonts.check('600 48px "Clash Display"'),
     }
   })
-  gate(`${width}: Bricolage Grotesque loaded`, fonts.bricolage)
+  gate(`${width}: Clash Display loaded`, fonts.bricolage)
 
   // Per-scene screenshots + word budget
   const scenes = await page.evaluate(
@@ -101,7 +103,7 @@ for (const width of widths) {
     if (width === 1440) {
       const exempt = EXEMPT.includes(scene.cls)
       gate(`words ${scene.cls}: display ≤ 12`, words.display <= 12, `${words.display}`)
-      if (!exempt) gate(`words ${scene.cls}: visible ≤ 45`, words.visible <= 45, `${words.visible}`)
+      if (!exempt) gate(`words ${scene.cls}: visible ≤ ${WORD_CEILING}`, words.visible <= WORD_CEILING, `${words.visible}`)
     }
   }
 

@@ -2,6 +2,8 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath } from 'node:url'
 
 /**
  * `vite preview` falls back to the home page for /contact (no trailing slash),
@@ -24,7 +26,8 @@ function previewDirectoryIndex(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), previewDirectoryIndex()],
+  plugins: [react(), tailwindcss(), previewDirectoryIndex()],
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   ssgOptions: {
     dirStyle: 'nested',
     formatting: 'none',

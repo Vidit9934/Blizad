@@ -61,7 +61,6 @@ export function Component() {
             <figure className="contact-quote">
               <span className="contact-quote__avatar" aria-hidden="true">
                 {quoteFounder.initials}
-                <PlaceholderTag confirmed={Boolean(quoteFounder.portrait)} label="Portrait coming" />
               </span>
               <blockquote className="contact-quote__text">“{quoteFounder.quote}”</blockquote>
               <figcaption className="t-small">

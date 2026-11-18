@@ -1,0 +1,42 @@
+.aisle-rows {
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.aisle-row {
+  display: grid;
+  gap: 20px;
+  padding-block: 36px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--nav-offset) + 16px);
+}
+.aisle-row__name {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.aisle-row__outcome {
+  margin-top: 8px;
+  color: var(--fg-muted);
+  max-width: 44ch;
+}
+.aisle-row__incl {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  font-size: 0.9375rem;
+}
+.aisle-row__go {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+@media (min-width: 900px) {
+  .aisle-row {
+    grid-template-columns: 5fr 4fr 3fr;
+    align-items: start;
+  }
+  .aisle-row__go {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

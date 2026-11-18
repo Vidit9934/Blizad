@@ -327,3 +327,77 @@ html.sheet-open {
     height: 40px;
   }
 }
+
+/* v10 marketplace menu: three aisle columns + Ask. Compound selectors so bundle order cannot decide the cascade. */
+.mega .mega__inner {
+  grid-template-columns: repeat(3, 1fr) minmax(160px, auto);
+}
+.mega .mega__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mega .mega__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+.mega .mega__dot--marketing {
+  background: var(--accent);
+}
+.mega .mega__dot--tools {
+  background: var(--spark);
+}
+.mega .mega__outcome {
+  display: block;
+  font-size: var(--step-micro);
+  color: var(--fg-subtle);
+  line-height: 1.4;
+}
+.nav__actions .nav__ask {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--step-small);
+  cursor: pointer;
+}
+.nav__actions .nav__ask:hover {
+  color: var(--white);
+  border-color: var(--accent-2);
+}
+.nav__actions .nav__ask kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+@media (min-width: 1081px) {
+  .nav__actions .nav__ask {
+    display: inline-flex;
+  }
+}
+.sheet .sheet__link {
+  background: none;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.mega .mega__all {
+  background: none;
+  border: 0;
+  font: inherit;
+  color: var(--accent-2);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}

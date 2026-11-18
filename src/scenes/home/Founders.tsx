@@ -1,85 +1,44 @@
-import { useRef } from 'react'
-import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
-import { Icon, type IconName } from '../../components/Icon'
-import { PlaceholderTag } from '../../components/PlaceholderTag'
-import { founders, type Founder } from '../../content/founders'
-import { MQ } from '../../motion/MotionProvider'
-import { useTilt } from '../../motion/pointer'
-import { useSceneReveals } from '../../motion/useSceneReveals'
+import { founders } from '@/content/founders'
+import './market.css'
 
-const roleIcon: Record<Founder['id'], IconName> = { sourav: 'grow', vidit: 'build' }
+const BRAIN = { sourav: 'The Marketing brain', vidit: 'The Tech brain' } as const
 
-/**
- * Scene 11 — Trust. Two tall portraits; the bio opens on hover or focus (always
- * open on touch). v9: the one genuinely new entrance primitive this redesign
- * adds — a one-shot curtain split revealing each portrait on first scroll in.
- */
+/** Two founders, one counter. Monogram tiles stand in until approved portraits exist (never a "coming soon" tag). */
 export function Founders() {
-  const scope = useRef<HTMLElement>(null)
-  useSceneReveals(scope)
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia()
-      mm.add(MQ.full, () => {
-        // CSS default is scaleX(0) (uncovered) so no-JS/no-motion readers always
-        // see the real portrait; only here, with motion confirmed on, do we cover
-        // it first so there's something to draw back open.
-        gsap.set(['.founder__curtain--a', '.founder__curtain--b'], { scaleX: 1 })
-        const tl = gsap.timeline({ scrollTrigger: { trigger: '.founders__grid', start: 'top 75%', once: true } })
-        tl.to('.founder__curtain--a', { scaleX: 0, duration: 0.9, ease: 'power3.inOut', stagger: 0.18 }, 0)
-        tl.to('.founder__curtain--b', { scaleX: 0, duration: 0.9, ease: 'power3.inOut', stagger: 0.18 }, 0)
-      })
-    },
-    { scope },
-  )
-
   return (
-    <section ref={scope} className="scene founders" aria-labelledby="founders-title" data-beat="7">
-      <div className="shell shell--wide">
-        <h2 id="founders-title" className="t-display founders__title">
-          Two founders. One growth system.
-        </h2>
-        <div className="founders__grid">
-          {founders.map((founder) => (
-            <FounderCard key={founder.id} founder={founder} />
-          ))}
-        </div>
+    <section className="founders2 container-x section-y" aria-labelledby="founders-title">
+      <p className="eyebrow">08 — The team</p>
+      {/* avoid-ai-design-ignore: SD5 - brief-mandated accent phrase, owner-approved v10 */}
+      <h2 id="founders-title" className="display mt-4">
+        Two brains. <span className="text-accent-2">One counter.</span>
+      </h2>
+      <div className="founders2__grid">
+        {founders.map((f, i) => (
+          <div key={f.id} className="founders2__item">
+            <article className="founders2__card">
+              {f.portrait ? (
+                <img src={f.portrait} alt={f.name} className="founders2__photo" loading="lazy" />
+              ) : (
+                <div className={`founders2__mono founders2__mono--${f.id}`} aria-hidden>
+                  {f.initials}
+                </div>
+              )}
+              <p className="eyebrow mt-6">{BRAIN[f.id]}</p>
+              <h3 className="display-sm mt-2">{f.name}</h3>
+              <p className="mt-1 text-muted">
+                {f.role}
+                {f.alsoKnownAs ? ` · ${f.alsoKnownAs}` : ''}
+              </p>
+              <p className="mt-4 max-w-[48ch] text-muted">{f.bio}</p>
+            </article>
+            {i === 0 && (
+              <span className="founders2__x" aria-hidden>
+                ×
+              </span>
+            )}
+          </div>
+        ))}
       </div>
     </section>
-  )
-}
-
-function FounderCard({ founder }: { founder: Founder }) {
-  const portrait = useRef<HTMLDivElement>(null)
-  useTilt(portrait, { maxDeg: 4 })
-  return (
-    <article className={`founder founder--${founder.id}`} tabIndex={0} data-cursor="Read">
-      <div ref={portrait} className="founder__portrait">
-        {founder.portrait ? (
-          <img src={founder.portrait} alt={`Portrait of ${founder.name}`} loading="lazy" />
-        ) : (
-          <span className="founder__monogram" aria-hidden="true">
-            {founder.initials}
-          </span>
-        )}
-        <span className="founder__curtain founder__curtain--a" aria-hidden="true" />
-        <span className="founder__curtain founder__curtain--b" aria-hidden="true" />
-        <PlaceholderTag confirmed={Boolean(founder.portrait)} label="Portrait coming" />
-      </div>
-      <div className="founder__text founder__panel panel">
-        <h3 className="founder__name">
-          {founder.name}
-          {founder.alsoKnownAs && <span className="founder__aka"> ({founder.alsoKnownAs})</span>}
-        </h3>
-        <p className="founder__role">
-          <Icon name={roleIcon[founder.id]} size={16} />
-          {founder.role}
-        </p>
-        <p className="t-small founder__focus">{founder.focus}</p>
-        <p className="founder__bio">{founder.bio}</p>
-      </div>
-    </article>
   )
 }

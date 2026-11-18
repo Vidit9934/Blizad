@@ -1,9 +1,10 @@
 ---
-version: v9
+version: v10
 name: Blizad
 description: Showcase site for Blizad, a Raipur growth company where one team runs the campaigns, the search visibility and the software. It should leave a founder thinking "these people move fast and know exactly what they are doing".
 colors:
-  ground: "#0A0A0C"      # Midnight — dominant surface (v5 near-black; frontmatter fixed in v6, no color change)
+  ground: "#07070A"      # v10 ground (was #0A0A0C)
+  ground-v9: "#0A0A0C"      # Midnight — dominant surface (v5 near-black; frontmatter fixed in v6, no color change)
   ground-deep: "#050506" # lower end of the midnight gradient
   ground-raised: "#151518" # elevation by lightness on dark
   ice: "#F3F8FC"         # light rooms (proof, path)
@@ -12,16 +13,17 @@ colors:
   ink-dark: "#0A0A0C"    # text on ice/white
   muted: "#A9B8CC"       # secondary text on midnight
   muted-dark: "#3D4F66"  # secondary text on ice
-  signal: "#087CFA"      # Electric Blue — action only
+  signal: "#2B4BFF"      # v10 Blitz Blue — action, Marketing aisle, manifesto (was #087CFA)
+  spark: "#E8FF47"       # v10 lightning yellow — Tools aisle, live dots, emphasis. Small doses
   light: "#00BFEF"       # Cyan — light and atmosphere only, never body text
 typography:
   display:
-    fontFamily: Bricolage Grotesque Variable
-    fontSize: clamp(2rem, 3.6vw, 3.25rem)
+    fontFamily: Clash Display (v10)
+    fontSize: clamp(2.5rem, 6vw, 6rem)
     fontWeight: 600 to 800
     letterSpacing: -0.025em to -0.03em
   body:
-    fontFamily: Bricolage Grotesque Variable
+    fontFamily: General Sans (v10)
     fontSize: 1rem
     lineHeight: 1.6
   mono:
@@ -42,6 +44,22 @@ components:
     rounded: "{rounded.pill}"
     padding: 14px 26px
 ---
+
+## v10 — the current: growth marketplace + immersive layer (supersedes any conflicting v5-v9 text below)
+
+**Why.** Owner-approved, 2026-11-18, from `BLIZAD-REDESIGN-PROMPT.md`: the site stopped reading as "an agency that also codes" and became a growth marketplace with three aisles (**Marketing. Tech. Tools.**), with an arrival sequence, a living 3D glass bolt and one story down the page. The owner explicitly chose to adopt the prompt's identity over the v9 identity, knowing it overrides the old "Don't change" list.
+
+- **Identity (changed on purpose).** Ground #07070A; Blitz Blue #2B4BFF (action, Marketing aisle, manifesto; white on it is 5.9:1); text-on-dark tint #7B93FF; spark #E8FF47. Aisle colour code is the only colour system: Marketing = blue, Tech = white, Tools = spark. Fonts: **Clash Display** (display, uppercase 700 for hero words), **General Sans** (body), **JetBrains Mono** (eyebrows, status, Ask bar, prices; real data only).
+- **ALL-CAPS mega type is a deliberate exception** to the refused-defaults list, for the three hero words only. Accent phrases in headings ("Three aisles.") are deliberate (SD5 ignored with a reason on each line).
+- **Stack coexistence.** Tailwind v4 is loaded **without preflight** (`src/styles/tailwind.css`, layer order declared identically in `base.css`), so utilities sit beside the hand-written CSS. **GSAP/Lenis own pins, ScrollTrigger and smooth scroll.** **framer-motion owns component-level layout/presence/hover and `useScroll`** (split scene, scroll-lit manifesto, shelf animations). Do not drive one element with both.
+- **Home order.** Hero (Aisle headline + Ask bar + badge) / offering band / split scene (pinned by CSS sticky, not ScrollTrigger) / proof numbers / marketplace shelf / stack builder / tools / Blitz Blue manifesto / shipped (Builds, the single GSAP pin) / how it works / founders / FAQ / final CTA / footer wordmark. Deep content lives on `/marketing`, `/tech`, `/tools` and the unchanged `/services/*` pages.
+- **Immersive layer.** `src/three/ImmersiveCanvas.tsx` (loaded through the SSG-safe dynamic import in `Scene3DBoundary.tsx`, never `React.lazy`): electric-field shader, three transmission-glass shards, local Lightformer environment, sparkles. `src/components/immersive/story.ts` is the mutable state read in `useFrame`. Stages come from `data-3d="hero|split|manifesto|footer"`; the canvas stops rendering when none is on screen. `BoltFallback` (radial gradient glow, no blur) shows until WebGL reports ready and for static/reduced-motion tiers; below 760px the tier is static, so phones get the fallback bolt. `WorldTint` recolours the body to Blitz Blue under the manifesto and fades the Atmosphere layer out.
+- **Preloader.** Pure CSS, once per session: spark bolt stroke, 000 to 100 counter, 160ms flash, curtain wipe. Hero entrance waits for it (`data-seen` skips both).
+- **Word budget (v10).** Display <= 12 words, ordinary scenes <= 65 visible words. Exempt (documented in `qa-scroll.mjs`): proof2, faq2, builds, marketplace-scene (catalogue), tools-scene (product demo cards), founders2 (real bios). The Stack Builder is a `data-product-screen`.
+- **Pins.** One ScrollTrigger pin (Builds). The v9 hero fan/scrub and the old beat rig (`beatRig.ts`, `poses.ts`) are deleted.
+- **Honesty.** Unconfirmed status/price/ETA render nothing or "Custom quote". Proof figures keep the visible Placeholder tag until confirmed (this overrides the prompt's "no Placeholder text" line on purpose: the repo's rule is stricter). The announcement bar and the "Taking projects for December" status are `confirmed: false` and do not render. Demo content in the Stack Builder / Build Stage is illustrative sample goals and sample sites, not client claims.
+- **Measured.** `npm run qa` at 390px passes everything. At 1440/1024px the glass bolt keeps the **long-task gate failing** on this machine's software WebGL (it passes with the 3D layer off, `--reduced`), and the median-frame gate flips between ~17ms and ~50ms across identical runs (same noise documented in v7/v9). Transmission samples, resolution, DPR and sparkle count were already cut. **Not confirmed on a real GPU** — that check is still outstanding.
+- **Not built from the prompt:** announcement bar (needs a confirmed status), Scramble labels (I-11), RippleMedia on build screenshots (I-8), RollText on nav/footer links (I-6; the component exists in `ui/`), the prompt's own GlobalCursor (the existing `motion/Cursor.tsx` already supports `data-cursor` labels and is kept).
 
 ## Overview
 
@@ -287,7 +305,7 @@ This matches v7's own already-documented finding in this same file almost exactl
 
 ## Don't change
 
-Bricolage Grotesque Variable (v6 — supersedes Plus Jakarta Sans Variable + Inter Variable), #087CFA, #00BFEF, #0A0A0C, #F3F8FC, #FFFFFF, the bolt mark, the tagline "Built for momentum."
+**(v10)** Clash Display + General Sans + JetBrains Mono, #2B4BFF, #7B93FF, #E8FF47, #07070A, #F3F8FC, #FFFFFF, the bolt mark, the tagline "Built for momentum." (The v5-v9 list — Bricolage Grotesque, #087CFA, #00BFEF, #0A0A0C — was retired by the owner on 2026-11-18.)
 
 **(v7)** This list is about identity, not implementation: the 3D object's internal mesh/material construction (StrikeCore/StrikeGlow/FieldRing/ChargePulse, the environment rig, per-beat camera moves) and the background stack's implementation (the signal-mote motion, the cone/echo-ring mechanism) are not covered by it and are expected to keep evolving — only the bolt's silhouette identity, the five colors above, and the tagline are locked.
 
