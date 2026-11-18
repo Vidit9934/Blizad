@@ -1,4 +1,5 @@
 .hero2 {
+  overflow-x: clip;
   padding-inline: var(--gutter);
   padding-bottom: clamp(32px, 5vw, 64px);
   display: flex;

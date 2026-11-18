@@ -55,7 +55,8 @@ export function useSceneTier(): SceneTier | null {
       }
       const mm = gsap.matchMedia()
       mm.add('(max-width: 760px)', () => {
-        setTier('static')
+        // v10: phones get the lite glass bolt (no split animation, centred pose) instead of the static icon
+        setTier('light')
       })
       mm.add('(min-width: 761px) and (max-width: 899px)', () => {
         setTier('light')

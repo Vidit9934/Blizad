@@ -89,8 +89,8 @@ function Shards({ lite }: { lite: boolean }) {
     const t = state.clock.elapsedTime
 
     g.position.x = damp(g.position.x, mobile ? 0 : pose.x, 3, dt)
-    g.position.y = damp(g.position.y, (mobile && story.stage === 'hero' ? 1.05 : pose.y) + Math.sin(t * 0.9) * 0.06, 3, dt)
-    g.scale.setScalar(damp(g.scale.x, mobile ? pose.s * 0.7 : pose.s, 3, dt))
+    g.position.y = damp(g.position.y, (mobile ? (story.stage === 'hero' ? 1.05 : story.stage === 'manifesto' ? 1.55 : pose.y) : pose.y) + Math.sin(t * 0.9) * 0.06, 3, dt)
+    g.scale.setScalar(damp(g.scale.x, mobile ? pose.s * (story.stage === 'manifesto' ? 0.45 : 0.7) : pose.s, 3, dt))
     g.rotation.y = damp(g.rotation.y, story.pointer.x * 0.45 + Math.sin(t * 0.35) * 0.35 * (1 - sp), 4, dt)
     g.rotation.x = damp(g.rotation.x, story.pointer.y * 0.25, 4, dt)
 

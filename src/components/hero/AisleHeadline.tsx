@@ -67,7 +67,7 @@ export function AisleHeadline({ ready = true }: { ready?: boolean }) {
             onBlur={() => setHover(null)}
             data-cursor="Explore"
             className={cn(
-              'electric block overflow-hidden pb-[0.06em] text-[clamp(3.5rem,19vw,8rem)] outline-none transition-opacity duration-500 lg:text-[clamp(5rem,min(13.5vw,19vh),15rem)]',
+              'electric block overflow-hidden pb-[0.06em] text-[clamp(2.5rem,13.2vw,8rem)] outline-none transition-opacity duration-500 lg:text-[clamp(5rem,min(13.5vw,19vh),15rem)]',
               hover && hover !== aisle && 'opacity-20',
             )}
           >

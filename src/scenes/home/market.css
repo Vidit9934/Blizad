@@ -581,3 +581,28 @@
   background: linear-gradient(to bottom, transparent 0, var(--bg) 260px);
   border-top: 0;
 }
+
+/* Mobile: grid tracks must be allowed to shrink below their content's max-content width */
+.close2__inner {
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+}
+.close2__ask,
+.hero2__ask,
+.askbar {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Phones: single-column grids must be able to shrink below their content (inputs, demo text) */
+.tool-card,
+.tool-card > * {
+  min-width: 0;
+}
+@media (max-width: 899px) {
+  .tools-scene .grid,
+  .stack-scene .grid,
+  .tool-card--lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
